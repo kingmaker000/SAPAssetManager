@@ -1,0 +1,18 @@
+{
+	"AppId": "COM.PGE.SAM2205.DV8",
+	"DestinationName": "DEST_SAM2205_PPROP",
+	"ServiceUrl": "/destinations/mobileservices",
+	"LanguageURLParam": "sap-language",
+	"OfflineOptions": {
+    	"ServiceOptions": {
+      		"supportsBind": false
+		},
+		"StoreParameters": {
+      		"EnableIndividualErrorArchiveDeletion": true,
+            "EnableRequestQueueOptimization": true
+    	}
+    },
+	"Headers": {
+        "SAP-PASSPORT": "/SAPAssetManager/Rules/Common/Passport/GetSAPPassportHeaderValue.js"
+    }
+}
