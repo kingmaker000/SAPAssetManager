@@ -90,14 +90,35 @@
                             "KeyName": "$(L,signature)",
                             "Value": "/SAPAssetManager/Rules/DigitalSignature/CheckDigitalSignatureState.js"
                         }
-
 					],
                     "Target": {
                         "EntitySet": "{@odata.readLink}",
                         "Service": "/SAPAssetManager/Services/AssetManager.service",
-                        "QueryOptions": "$select=PersonNum,OperationShortText,ControlKey,MainWorkCenterPlant,MainWorkCenter,FunctionalLocationOperation/FuncLocDesc&$expand=FunctionalLocationOperation,Employee_Nav"
+                        "QueryOptions": "$select=PersonNum,OperationShortText,ControlKey,MainWorkCenterPlant,MainWorkCenter,FunctionalLocationOperation/FuncLocDesc,OrderId,OperationNo&$expand=FunctionalLocationOperation,Employee_Nav"
                     }
 				},
+                {
+                    "_Type": "Section.Type.SimplePropertyCollection",
+                    "_Name": "OilSamplingStatusSection",
+                    "Visible": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ZzOilSamplingStatusVisible.js",
+                    "SimplePropertyCells":
+                    [{
+                        "SimplePropertyCell": {
+                            "KeyName": "$(L,oil_sampling_status)",
+                            "Value": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ZzOilSamplingStatus.js",
+                            "Styles": {
+                                "Value": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ZzOilSamplesCountStyle.js"
+                            },
+                            "AccessoryType": "disclosureIndicator",
+                            "OnPress": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewNav.js"
+                        }
+                    }],
+                    "Layout":
+                    {
+                        "NumberOfColumns": 1,
+                        "MinimumInteritemSpacing": "$(PLT,66,0)"
+                    }
+                },
                 {
                     "Header": {
                         "Caption": "$(L,suboperations)"
@@ -418,6 +439,18 @@
                             "OnPress": "/SAPAssetManager/Rules/LAM/LAMNav.js",
                             "Visible": "/SAPAssetManager/Rules/LAM/LAMVisible.js"
                         }
+                    },
+                    {
+                        "SimplePropertyCell": {
+                            "AccessoryType": "disclosureIndicator",
+                            "KeyName": "$(L,oil_samples)",
+                            "Value": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ZzOilSamplesCountCompleteVsTotal.js",
+                            "OnPress": "/SAPAssetManager/Actions/WorkOrders/Operations/ZzOilSamples/ZzOilSamplesListViewNav.action",
+                            "Styles": {
+                                "Value": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ZzOilSamplesCountStyle.js"
+                            },
+                            "Visible": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ZzOilSamplingStatusVisible.js"
+                        }
                     }
                 ],
                     "Layout":
@@ -433,7 +466,7 @@
             "_Name": "SectionedTable"
         }
     ],
-    "ToolBar": {
+     "ToolBar": {
         "Controls": [
             {
                 "_Name": "FlexibleSpaceLeftTbI",
@@ -453,8 +486,8 @@
                 "SystemItem": "FlexibleSpace"
             }
         ]
-    },
+    },   
     "_Type": "Page",
     "_Name": "WorkOrderOperationDetailsPage",
-    "DataSubscriptions": ["Confirmations","PMMobileStatuses","UserTimeEntries","MyWorkOrderSubOperations","MyWorkOrderObjectLists","MyWorkOrderOperations","UserPreferences", "Employees", "MyWorkOrderDocuments"]
+    "DataSubscriptions": ["Confirmations","PMMobileStatuses","UserTimeEntries","MyWorkOrderSubOperations","MyWorkOrderObjectLists","MyWorkOrderOperations","UserPreferences", "Employees", "MyWorkOrderDocuments", "ZMyWorkOrderSamples"]
 }

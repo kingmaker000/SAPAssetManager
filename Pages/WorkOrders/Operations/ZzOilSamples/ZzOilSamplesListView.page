@@ -1,0 +1,64 @@
+{
+    "Caption": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewCaption.js",
+    "Controls": [
+        {
+            "Sections": [
+
+                {
+                    "SimplePropertyCells":
+                    [{
+                        "SimplePropertyCell": {
+                            "KeyName": "$(L,oil_sampling_status)",
+                            "Value": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ZzOilSamplingStatus.js",
+                            "Styles": {
+                                "Value": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ZzOilSamplesCountStyle.js"
+                            }
+                        }
+                    }],
+                    "Layout":
+                    {
+                        "NumberOfColumns": 1,
+                        "MinimumInteritemSpacing": "$(PLT,66,0)"
+                    },
+                    "_Type" : "Section.Type.SimplePropertyCollection"
+                },
+                {
+                    "Search": {
+                        "Enabled": true,
+                        "Delay": 500,
+                        "MinimumCharacterThreshold": 3,
+                        "Placeholder": "$(L,search)",
+				        "BarcodeScanner": true
+                    },
+                    "Header": {
+                        "UseTopPadding": false
+    		        },
+                    "ObjectCell": {
+                        "PreserveIconStackSpacing": true,
+                        "Icons": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewIconImages.js",
+                        "Title": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewFormat.js",
+                        "Subhead": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewFormat.js",
+                        "Footnote": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewFormat.js",
+                        "Description": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewFormat.js",
+                        "StatusText": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewFormat.js",
+                        "SubstatusText": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewFormat.js",
+                        "AccessoryType": "disclosureIndicator",
+                        "OnPress": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleUpdateNav.js"
+                    },
+                    "Target": {
+                        "EntitySet": "ZMyWorkOrderSamples",
+                        "Service": "/SAPAssetManager/Services/AssetManager.service",
+                        "QueryOptions": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/ListView/ZzOilSamplesListViewQueryOptions.js"
+                    },
+                    "_Type": "Section.Type.ObjectTable",
+                    "_Name": "ZzOilSamplesList"
+                }
+            ],
+            "_Type": "Control.Type.SectionedTable",
+            "_Name": "ZzOilSampleListSectionedTable"
+        }
+    ],
+    "_Type": "Page",
+    "_Name": "ZzOilSamplesListViewPage",
+    "DataSubscriptions":["ZMyWorkOrderSamples"]
+}

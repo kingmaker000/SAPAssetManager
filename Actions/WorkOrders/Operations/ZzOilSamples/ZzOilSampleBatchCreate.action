@@ -1,0 +1,20 @@
+{
+	"_Type": "Action.Type.ODataService.CreateEntity",
+	"Target":
+	{
+		"EntitySet" : "MaterialBatches",
+		"Service" : "/SAPAssetManager/Services/AssetManager.service"
+	},
+	"Properties":
+	{
+        "Batch": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleBatchWithdrawn.js",
+		"MaterialNum" : "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleMaterialNum.js",
+		"Plant" : "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSamplePlant.js"
+	},
+    "RequestOptions": {
+        "SendEmptyUpdate": true
+    },
+  "Headers": {
+    "OfflineOData.TransactionID":"/SAPAssetManager/Rules/WorkOrders/WorkOrderId.js"
+  }
+}

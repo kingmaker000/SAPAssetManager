@@ -1,13 +1,7 @@
 {
     "OnFailure": "/SAPAssetManager/Rules/Common/UpdateRequiredFailed.js",
     "OnSuccess": "/SAPAssetManager/Rules/Notifications/Item/CreateUpdate/NotificationItemCreateUpdateOnCommit.js",
-    "RequiredFields": [
-        "ItemDescription",
-        "PartGroupLstPkr",
-        "PartDetailsLstPkr",
-        "DamageGroupLstPkr",
-        "DamageDetailsLstPkr"
-    ],
+    "RequiredFields": "/SAPAssetManager/Rules/Notifications/Item/CreateUpdate/ItemRequiredFields.js",
     "_Type": "Action.Type.CheckRequiredFields",
     "ShowActivityIndicator": true,
     "ActivityIndicatorText" : " "

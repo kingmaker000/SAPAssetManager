@@ -17,7 +17,10 @@
         "EntryUOM": "/SAPAssetManager/Rules/Parts/Issue/LineItem/PartMovementLineItemUOM.js",
         "AutoGenerateSerialNumbers":"/SAPAssetManager/Rules/Parts/Issue/LineItem/PartIssueLineItemAutoGenerateSerial.js",
         "Batch": "/SAPAssetManager/Rules/Parts/Issue/Header/PartIssueHeaderBatch.js",
-        "ValuationType": "/SAPAssetManager/Rules/Parts/Issue/LineItem/PartLineItemValuationType.js"
+        "ValuationType": "/SAPAssetManager/Rules/Parts/Issue/LineItem/PartLineItemValuationType.js",
+        "MovementReason": "/SAPAssetManager/Rules/Parts/Issue/LineItem/ZzPartMovementLineItemMovementReason.js",
+        "ZzDateOfManufacture": "/SAPAssetManager/Rules/Parts/Issue/LineItem/ZzPartMovementLineItemZzDateOfManufacture.js",
+        "ZzEquipment": "/SAPAssetManager/Rules/Parts/Issue/LineItem/ZzPartMovementLineItemZzEquipment.js"
     },
     "Headers": {
         "OfflineOData.RemoveAfterUpload": "true",

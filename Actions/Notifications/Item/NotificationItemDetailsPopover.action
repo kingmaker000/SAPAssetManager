@@ -11,7 +11,8 @@
 	},
 	{
 		"Title": "$(L,add_activity)",
-		"OnPress": "/SAPAssetManager/Rules/Notifications/Item/Activity/CreateUpdate/NotificationItemActivityCreateNav.js"
+		"OnPress": "/SAPAssetManager/Rules/Notifications/Item/Activity/CreateUpdate/NotificationItemActivityCreateNav.js",
+		"Visible": false
 	},
 	{
 		"Title" : "/SAPAssetManager/Rules/Notes/NotePopoverSelectionText.js",

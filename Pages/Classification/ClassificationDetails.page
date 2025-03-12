@@ -21,14 +21,14 @@
                     "ObjectCell": {
 						"Icons": "/SAPAssetManager/Rules/Classification/Characteristics/CharacteristicIsModifiedLocal.js",
                         "Title": "#Property:Characteristic/#Property:CharDesc",
-						"Subhead": "/SAPAssetManager/Rules/Classification/Characteristics/CharacteristicDisplayValueWithUOM.js",
-						"AccessoryType": "disclosureIndicator",
-						"OnPress": "/SAPAssetManager/Rules/Classification/Characteristics/CharacteristicValueDetailNav.js"
+						"Description": "/SAPAssetManager/Rules/Classification/Characteristics/CharacteristicDisplayValueWithUOM.js",
+						"Subhead": "#Property:Characteristic/#Property:CharName",
+						"AccessoryType": "none"
                     },
                     "Target": {
                         "EntitySet": "/SAPAssetManager/Rules/Classification/ClassCharValueEntitySet.js",
 						"Service": "/SAPAssetManager/Services/AssetManager.service",
-						"QueryOptions": "$expand=Characteristic/CharacteristicValues"
+						"QueryOptions": "$expand=Characteristic/CharacteristicValues&$orderby=ItemId"
                     },    
                     "_Name": "Classification",
                     "_Type": "Section.Type.ObjectTable"

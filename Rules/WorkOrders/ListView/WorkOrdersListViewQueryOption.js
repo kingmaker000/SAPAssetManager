@@ -39,6 +39,20 @@ export default function WorkOrdersListViewQueryOption(context) {
         filters.push(`substringof('${searchString}', tolower(OrderId))`);
         filters.push(`substringof('${searchString}', tolower(WOPriority/PriorityDescription))`);
         filters.push(`substringof('${searchString}', tolower(OrderDescription))`);
+        ////////////////////////////////////////////////////////////////////////////////////////
+        // Begin PG&E INSERT (D0RB)
+        //
+        // Expose additional fields to search
+        filters.push(`substringof('${searchString}', tolower(MaintenanceActivityType))`);
+        filters.push(`substringof('${searchString}', tolower(Equipment/InventoryNum))`);
+        filters.push(`substringof('${searchString}', tolower(Equipment/ZzOperatingNum))`);
+        filters.push(`substringof('${searchString}', tolower(Equipment/ZzFeeder))`);
+        filters.push(`substringof('${searchString}', tolower(Equipment/ZzVault))`);
+        filters.push(`substringof('${searchString}', tolower(Equipment/EquipDesc))`);
+        filters.push(`substringof('${searchString}', tolower(Equipment/Address/Street))`);
+        //End PG&E INSERT (D0RB)
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         if (libSuper.isSupervisorFeatureEnabled(context)) {
             //Supervisor assigned to filters
             filters.push(`WOPartners/any(wp : wp/PartnerFunction eq 'VW' and (substringof('${searchString}', tolower(wp/Employee_Nav/FirstName)) or substringof('${searchString}', tolower(wp/Employee_Nav/LastName))))`);

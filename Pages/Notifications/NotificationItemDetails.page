@@ -56,25 +56,6 @@
 				"Value" : "/SAPAssetManager/Rules/Notifications/Item/Details/NotificationItemDetailsDamage.js"
 			},
 			{
-				"KeyName" : "$(L,code_group)",
-				"Value" : "/SAPAssetManager/Rules/Notifications/Item/Details/NotificationItemDetailsPartGroup.js"
-			},
-			{
-				"KeyName" : "$(L,defect_location)",
-				"Value" : "/SAPAssetManager/Rules/Notifications/Item/Details/NotificationItemDetailsPart.js",
-				"Visible": "/SAPAssetManager/Rules/ComponentsEnablement/IsQMComponentEnabled.js"
-			},
-			{
-				"KeyName" : "$(L,defect)",
-				"Value" : "/SAPAssetManager/Rules/Notifications/Item/Details/NotificationItemDetailsCodeGroup.js",
-				"Visible": "/SAPAssetManager/Rules/ComponentsEnablement/IsQMComponentEnabled.js"
-			},
-			{
-				"KeyName" : "$(L,defect_type)",
-				"Value" : "/SAPAssetManager/Rules/Notifications/Item/Details/NotificationItemDetailsDamageCode.js",
-				"Visible": "/SAPAssetManager/Rules/ComponentsEnablement/IsQMComponentEnabled.js"
-			},
-			{
 				"KeyName" : "$(L,equipment)",
 				"Value" : "/SAPAssetManager/Rules/Notifications/Item/Details/NotificationItemDetailsEquipment.js",
 				"Visible": "/SAPAssetManager/Rules/ComponentsEnablement/IsQMComponentEnabled.js"

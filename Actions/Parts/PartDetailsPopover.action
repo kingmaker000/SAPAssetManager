@@ -1,7 +1,7 @@
 {
     "PopoverItems": [
         {
-            "Title": "$(L,issue_part)",
+            "Title": "/SAPAssetManager/Rules/Parts/Issue/ZzPartIssueCaption.js",
             "OnPress": "/SAPAssetManager/Rules/Parts/Issue/PartIssueNav.js",
             "Visible": "/SAPAssetManager/Rules/Parts/Issue/IssueEnable.js"
         },

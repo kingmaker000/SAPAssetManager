@@ -1,3 +1,7 @@
+//Begin PG&E INSERT: Import Common Library
+import libCom from '../Common/Library/CommonLibrary';
+//End PG&E INSERT: Import Common Library
+
 export default function PartsListQueryOptions(context) {
 
     let searchString = context.searchString;
@@ -13,6 +17,12 @@ export default function PartsListQueryOptions(context) {
     if (context.binding.OperationNo) {
         filterOpts.push(`OperationNo eq '${context.binding.OperationNo}'`);
     }
+
+    //Begin PG&E INSERT: Filter out oil sample bottle and syringe
+    let takeSample = libCom.getAppParam(context, 'WORKORDER', 'ZzMovementReasonForOilSample');
+    filterOpts.push(`MovementReason ne '${takeSample}'`);
+    //End PG&E INSERT: Filter out oil sample bottle and syringe
+
     queryBuilder.filter(filterOpts.join(' and '));
 
     if (searchString !== '') {

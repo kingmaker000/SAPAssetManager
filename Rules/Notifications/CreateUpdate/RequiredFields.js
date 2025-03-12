@@ -1,17 +1,29 @@
 import failureModeGroupValue from './NotificationCreateUpdateQMCodeGroupValue';
-import libCommon from '../../Common/Library/CommonLibrary';
+import libCom from '../../Common/Library/CommonLibrary';
 import IsPhaseModelEnabled from '../../Common/IsPhaseModelEnabled';
 
 export default function RequiredFields(context) {
     let required = ['NotificationDescription', 'TypeLstPkr'];
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Begin PG&E Enhancement (D0RB)
+    // Make Priority required
+    if ((function () { try { return context.evaluateTargetPathForAPI('#Control:PrioritySeg').visible; } catch (exc) { return false; } })()) {
+        required.push('PrioritySeg');
+    }
+    else {
+        required.push('PriorityLstPkr');
+    }
+    // End PG&E Enhancement (D0RB)
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+
     // eslint-disable-next-line brace-style
-    if ((function() { try { return context.evaluateTargetPathForAPI('#Control:PartnerPicker1').visible; } catch (exc) { return false; } } )()) {
+    if ((function () { try { return context.evaluateTargetPathForAPI('#Control:PartnerPicker1').visible; } catch (exc) { return false; } })()) {
         required.push('PartnerPicker1');
     }
 
     // eslint-disable-next-line brace-style
-    if ((function() { try { return context.evaluateTargetPathForAPI('#Control:PartnerPicker2').visible; } catch (exc) { return false; } } )()) {
+    if ((function () { try { return context.evaluateTargetPathForAPI('#Control:PartnerPicker2').visible; } catch (exc) { return false; } })()) {
         required.push('PartnerPicker2');
     }
 
@@ -29,72 +41,35 @@ export default function RequiredFields(context) {
         }
     }
 
-    //If the user enters an item description then, make the other fields mandatory
-    const itemDescription = (() => {
+    const notifType = (() => {
         try {
-            return context.evaluateTargetPath('#Control:ItemDescription/#Value');
-        } catch (e) {
-            return '';
-        }
-    })();
-    const itemPartGroup = (() => {
-        try {
-            return context.evaluateTargetPath('#Control:PartGroupLstPkr/#SelectedValue');
-        } catch (e) {
-            return '';
-        }
-    })();
-    const itemPart = (() => {
-        try {
-            return context.evaluateTargetPath('#Control:PartDetailsLstPkr/#SelectedValue');
-        } catch (e) {
-            return '';
-        }
-    })();
-    const itemDamageGroup = (() => {
-        try {
-            return context.evaluateTargetPath('#Control:DamageGroupLstPkr/#SelectedValue');
-        } catch (e) {
-            return '';
-        }
-    })();
-    const itemDamage = (() => {
-        try {
-            return context.evaluateTargetPath('#Control:DamageDetailsLstPkr/#SelectedValue');
+            return context.evaluateTargetPath('#Control:TypeLstPkr/#SelectedValue');
         } catch (e) {
             return '';
         }
     })();
 
-    const causeDescription = (() => {
-        try {
-            return context.evaluateTargetPath('#Control:CauseDescription/#Value');
-        } catch (e) {
-            return '';
-        }
-    })();
-    const causeGroup = (() => {
-        try {
-            return context.evaluateTargetPath('#Control:CauseGroupLstPkr/#SelectedValue');
-        } catch (e) {
-            return '';
-        }
-    })();
-    const causeCode = (() => {
-        try {
-            return context.evaluateTargetPath('#Control:CodeLstPkr/#SelectedValue');
-        } catch (e) {
-            return '';
-        }
-    })();
+    //Determine if we are on edit vs. create
+    let onCreate = libCom.IsOnCreate(context);
+    if (onCreate) {
+        var notifTypesEnablePart = new Array();
+        var notifTypesEnableDamage = new Array();
+        var notifTypesEnableActivity = new Array();
+        notifTypesEnablePart = libCom.getAppParam(context, 'ZNOTIFICATION_CODES', 'NOTypes.Enable.Part').split(",");
+        notifTypesEnableDamage = libCom.getAppParam(context, 'ZNOTIFICATION_CODES', 'NOTypes.Enable.Damage').split(",");
+        notifTypesEnableActivity = libCom.getAppParam(context, 'ZNOTIFICATION_CODES', 'NOTypes.Enable.Activity').split(",");
 
-    if (causeDescription || causeGroup || causeCode) {
-        // If any cause fields are filled out, everything is required
-        required.push('CauseGroupLstPkr','CodeLstPkr', 'PartGroupLstPkr','PartDetailsLstPkr','DamageGroupLstPkr','DamageDetailsLstPkr');
-    } else if (itemDescription || itemPartGroup || itemPart || itemDamageGroup || itemDamage) {
-        // If any item fields are filled out, only item-related fields are required
-        required.push('PartGroupLstPkr','PartDetailsLstPkr','DamageGroupLstPkr','DamageDetailsLstPkr');
-    }
+        if (notifTypesEnablePart.includes(notifType)) {
+            required.push('PartGroupLstPkr', 'PartDetailsLstPkr');
+        }
+
+        if (notifTypesEnableDamage.includes(notifType)) {
+            required.push('DamageGroupLstPkr', 'DamageDetailsLstPkr');
+        }
+        if (notifTypesEnableActivity.includes(notifType)) {
+            required.push('GroupLstPkr', 'CodeLstPkr');
+        }       
+    }    
 
     return required;
 }

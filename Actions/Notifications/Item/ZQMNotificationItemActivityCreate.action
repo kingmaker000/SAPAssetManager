@@ -1,0 +1,32 @@
+{
+	"_Type": "Action.Type.ODataService.CreateEntity",
+	"Target":
+	{
+		"EntitySet" : "MyNotificationItemActivities",
+		"Service" : "/SAPAssetManager/Services/AssetManager.service"
+	},
+	"Properties":
+	{
+        "NotificationNumber": "/SAPAssetManager/Rules/Notifications/Item/Activity/CreateUpdate/ZNotificationLocalNumber.js",
+		"ItemNumber" : "0001",
+		"ActivitySequenceNumber" : "/SAPAssetManager/Rules/Notifications/Item/Activity/GenerateNotificationItemActivityID.js",
+		"ActivityText" : "#Control:NotificationDescription/#Value",
+		"ActivityCodeGroup": "/SAPAssetManager/Rules/Notifications/GroupLstPkrValue.js",
+        "ActivityCode" : "/SAPAssetManager/Rules/Notifications/CodeLstPkrValue.js",
+        "ActivitySortNumber" : "/SAPAssetManager/Rules/Notifications/Item/Activity/ItemActivitySortNumber.js"
+	},
+    "Headers":
+	{
+        "OfflineOData.RemoveAfterUpload": "true",
+        "OfflineOData.TransactionID": "/SAPAssetManager/Rules/Notifications/Item/Activity/CreateUpdate/ZNotificationLocalNumber.js"
+    },
+	"CreateLinks":
+	[{
+		"Property" : "Item",
+		"Target":
+		{
+			"EntitySet" : "MyNotificationItems",
+			"ReadLink" : "/SAPAssetManager/Rules/Notifications/Item/Activity/CreateUpdate/ZNotificationLocalItemReadLink.js"
+		}
+	}]
+}

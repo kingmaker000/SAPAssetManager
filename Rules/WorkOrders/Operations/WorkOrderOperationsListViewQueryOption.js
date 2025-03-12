@@ -38,6 +38,14 @@ export default function WorkOrderOperationsListViewQueryOption(context) {
         filters.push(`substringof('${searchString.toLowerCase()}', tolower(OrderId))`);
         filters.push(`substringof('${searchString.toLowerCase()}', tolower(OperationNo))`);
         filters.push(`substringof('${searchString.toLowerCase()}', tolower(OperationShortText))`);
+        //Begin PG&E INSERT: Expose additional fields to search
+        filters.push(`substringof('${searchString.toLowerCase()}', tolower(WOHeader/Equipment/InventoryNum))`);
+        filters.push(`substringof('${searchString.toLowerCase()}', tolower(WOHeader/Equipment/ZzOperatingNum))`);
+        filters.push(`substringof('${searchString.toLowerCase()}', tolower(WOHeader/Equipment/ZzFeeder))`);
+        filters.push(`substringof('${searchString.toLowerCase()}', tolower(WOHeader/Equipment/ZzVault))`);
+        filters.push(`substringof('${searchString.toLowerCase()}', tolower(WOHeader/Equipment/EquipDesc))`);
+        filters.push(`substringof('${searchString.toLowerCase()}', tolower(WOHeader/Equipment/Address/Street))`);
+        //End PG&E INSERT: Expose additional fields to search
         if (libSuper.isSupervisorFeatureEnabled(context)) {
             //Supervisor assigned to filters
             filters.push(`substringof('${searchString.toLowerCase()}', tolower(Employee_Nav/LastName))`);
@@ -54,6 +62,8 @@ export default function WorkOrderOperationsListViewQueryOption(context) {
             queryBuilder.filter().and(filter);
         }
         return queryBuilder;
+    //Begin PG&E REPLACE: Ensure search filter is considered if present
+    /*
     } else if (CommonLibrary.getStateVariable(context, 'FromOperationsList')) { // if we are coming from the side menu
         queryBuilder = Constants.FromWOrkOrderOperationListQueryOptions(context);
     } else if ((libSuper.isSupervisorFeatureEnabled(context)) && CommonLibrary.isDefined(context.binding) && CommonLibrary.isDefined(context.binding.isSupervisorOperationsList)) {
@@ -61,6 +71,15 @@ export default function WorkOrderOperationsListViewQueryOption(context) {
     } else if ((libSuper.isSupervisorFeatureEnabled(context)) && CommonLibrary.isDefined(context.binding) && CommonLibrary.isDefined(context.binding.isTechnicianOperationsList)) {
         queryBuilder = libSuper.getFilterForSubmittedOperation(context);
     }
+    */    
+    } else if ((libSuper.isSupervisorFeatureEnabled(context)) && CommonLibrary.isDefined(context.binding) && CommonLibrary.isDefined(context.binding.isSupervisorOperationsList)) {
+        queryBuilder = libSuper.getFilterForOperationPendingReview(context);
+    } else if ((libSuper.isSupervisorFeatureEnabled(context)) && CommonLibrary.isDefined(context.binding) && CommonLibrary.isDefined(context.binding.isTechnicianOperationsList)) {
+        queryBuilder = libSuper.getFilterForSubmittedOperation(context);
+    } else if (filter || CommonLibrary.getStateVariable(context, 'FromOperationsList')) { // if we are coming from the side menu
+        queryBuilder = Constants.FromWOrkOrderOperationListQueryOptions(context);
+    }
+    //End PG&E REPLACE: Ensure search filter is considered if present
 
     if (queryBuilder) {
         if (userFeaturesLib.isFeatureEnabled(context, context.getGlobalDefinition('/SAPAssetManager/Globals/Features/Meter.global').getValue())) {

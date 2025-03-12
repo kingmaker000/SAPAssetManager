@@ -35,6 +35,14 @@ export default class {
 
     static showTimeCaptureMessage(context, isFinalRequired=false, mobileStatus) {
 
+        //////////////////////////////////////////////////////////////////////////
+        // Begin PG&E INSERT (D0RB)
+        //
+        // Skip time capture dialog
+        return Promise.resolve(true);
+        // End PG&E INSERT (D0RB)
+        //////////////////////////////////////////////////////////////////////////
+
         let reviewStatus = libCommon.getAppParam(context, 'MOBILESTATUS', context.getGlobalDefinition('/SAPAssetManager/Globals/MobileStatus/ParameterNames/ReviewParameterName.global').getValue());
         let rejectedStatus = libCommon.getAppParam(context, 'MOBILESTATUS', context.getGlobalDefinition('/SAPAssetManager/Globals/MobileStatus/ParameterNames/RejectedParameterName.global').getValue());
         let confirm = (isConfirmationsEnabled(context) && authorizedConfirmationCreate(context));

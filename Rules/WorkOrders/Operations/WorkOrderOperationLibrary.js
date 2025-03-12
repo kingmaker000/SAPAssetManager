@@ -1034,7 +1034,10 @@ export class OperationConstants {
     static FromWOrkOrderOperationListQueryOptions(context, useDataQuery = true) {
         let expands = 'WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOOprDocuments_Nav/Document';
         if (userFeaturesLib.isFeatureEnabled(context, context.getGlobalDefinition('/SAPAssetManager/Globals/Features/QM.global').getValue())) {
-            expands = 'InspectionPoint_Nav,WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOOprDocuments_Nav/Document';
+            //Begin PG&E REPLACE: Add WOHeader/Equipment, WOHeader/Equipment/Address, and ZOilSamples to expands
+            //expands = 'InspectionPoint_Nav,WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOOprDocuments_Nav/Document';
+            expands = 'InspectionPoint_Nav,WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOOprDocuments_Nav/Document,WOHeader/Equipment,WOHeader/Equipment/Address,ZOilSamples';
+            //End PG&E REPLACE: Add WOHeader/Equipment and WOHeader/Equipment/Address to expands
         }
         if (useDataQuery) {
             let queryBuilder = context.dataQueryBuilder();
@@ -1050,7 +1053,10 @@ export class OperationConstants {
     static OperationListQueryOptions(context) {
         let expands = '$expand=WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,WOHeader/OrderMobileStatus_Nav,WOHeader/UserTimeEntry_Nav,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOOprDocuments_Nav/Document';
         if (userFeaturesLib.isFeatureEnabled(context, context.getGlobalDefinition('/SAPAssetManager/Globals/Features/QM.global').getValue())) {
-            expands = '$expand=InspectionPoint_Nav,WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,WOHeader/OrderMobileStatus_Nav,WOHeader/UserTimeEntry_Nav,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOOprDocuments_Nav/Document';
+            //Begin PG&E REPLACE: Add WOHeader/Equipment, WOHeader/Equipment/Address, and ZOilSamples to expands
+            //expands = '$expand=InspectionPoint_Nav,WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,WOHeader/OrderMobileStatus_Nav,WOHeader/UserTimeEntry_Nav,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOOprDocuments_Nav/Document';
+            expands = '$expand=InspectionPoint_Nav,WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,WOHeader/OrderMobileStatus_Nav,WOHeader/UserTimeEntry_Nav,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOOprDocuments_Nav/Document,WOHeader/Equipment,WOHeader/Equipment/Address,ZOilSamples';
+            //End PG&E REPLACE: Add WOHeader/Equipment and WOHeader/Equipment/Address to expands
         }
         libCommon.setStateVariable(context, 'CustomListFilter', '');
         return ''

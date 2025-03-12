@@ -1,0 +1,166 @@
+{
+    "Caption": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleUpdateCaption.js",
+    "OnLoaded": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleUpdateOnLoad.js",
+    "ActionBar": {
+        "Items": [
+            {
+                "Position": "left",
+                "SystemItem": "Cancel",
+                "OnPress": "/SAPAssetManager/Actions/Page/CancelPage.action"
+            },
+            {
+                "Position": "right",
+                "SystemItem": "$(PLT,'Done','')",
+                "Text": "/SAPAssetManager/Rules/Common/Platform/DoneText.js",
+                "OnPress": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleDoneAction.js",
+                "Visible": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleIsEditable.js"
+            }
+        ]
+    },
+    "Controls": [
+        {
+            "Sections": [
+                {
+                    "Controls": [
+                        {
+                            "_Type": "Control.Type.FormCell.SimpleProperty",
+                            "_Name": "ZzOperatingNum",
+                            "Caption": "$(L,operating_num)",
+                            "PlaceHolder": "",
+                            "Value": "{Equipment/ZzOperatingNum}",
+                            "ReadOnly": true,
+                            "IsEditable": false
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.SimpleProperty",
+                            "_Name": "EquipDesc",
+                            "Caption": "$(L,equipment)",
+                            "PlaceHolder": "",
+                            "Value": "{{#Property:Equipment/#Property:EquipDesc}} ({{#Property:EquipId}})",
+                            "ReadOnly": true,
+                            "IsEditable": false
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.SimpleProperty",
+                            "_Name": "EquipType",
+                            "Caption": "$(L,equipment_type)",
+                            "PlaceHolder": "",
+                            "Value": "{Equipment/EquipType}",
+                            "ReadOnly": true,
+                            "IsEditable": false
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.SimpleProperty",
+                            "_Name": "MaterialDescription",
+                            "Caption": "$(L,part)",
+                            "PlaceHolder": "",
+                            "Value": "{Material/Description}",
+                            "ReadOnly": true,
+                            "IsEditable": false
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.SimpleProperty",
+                            "_Name": "BatchWithdrawn",
+                            "Caption": "$(L,batch_withdrawn)",
+                            "PlaceHolder": "",
+                            "Value": "{BatchWithdrawn}",
+                            "ReadOnly": true,
+                            "IsEditable": false,
+                            "IsVisible": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleBatchWithdrawnIsVisible.js"
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.SimpleProperty",
+                            "_Name": "BatchNumber",
+                            "Caption": "$(L,batch_collected)",
+                            "PlaceHolder": "",
+                            "Value": "{Batch}",
+                            "ReadOnly": true,
+                            "IsEditable": false,
+                            "IsVisible": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleBatchIsVisible.js"
+                        }
+                    ]
+                },     
+                {
+                    "Controls": [
+                        {
+                            "_Type": "Control.Type.FormCell.ListPicker",
+                            "_Name": "BatchNumberLstPkr", 
+                            "Caption": "$(L,batch_number)",
+                            "Value" : "/SAPAssetManager/Rules/Parts/CreateUpdate/PartBatchNumberValues.js",
+                            "AllowDefaultValueIfOneItem": false,
+                            "AllowMultipleSelection": false,
+                            "IsPickerDismissedOnSelection": true,
+                            "Search": {
+                                "Enabled": true,
+                                "Delay": 500,
+                                "MinimumCharacterThreshold": 3,
+                                "Placeholder": "$(L,search)",
+                                "BarcodeScanner": true
+                            },
+                            "PickerItems": {
+                                "DisplayValue": "{{#Property:Batch}}",
+                                "ReturnValue": "{Batch}",
+                                "Target": {
+                                    "EntitySet": "MaterialBatches",
+                                    "Service": "/SAPAssetManager/Services/AssetManager.service",
+                                    "QueryOptions": "/SAPAssetManager/Rules/Parts/CreateUpdate/PartBatchNumberQueryOptions.js"
+                                }
+                            },
+                            "IsVisible": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleIsEditable.js",
+                            "OnValueChange": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleBatchOnValueChange.js"
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.DatePicker",
+                            "_Name": "SampleDatePicker",
+                            "Caption": "$(L, sample_date)",
+                            "Mode" : "Date",
+                            "IsEditable": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleIsEditable.js"
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.DatePicker",
+                            "_Name": "SyncDateTimePicker",
+                            "Caption": "$(L, sync_date_time)",
+                            "Mode" : "Datetime",
+                            "IsEditable": false,
+                            "IsVisible": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleWithdrawButtonVisible.js"
+                        }
+                    ]
+                },
+
+                {
+                    "Controls": [
+                        {
+                            "_Type": "Control.Type.FormCell.Button",
+                            "_Name": "DiscardButton",
+                            "Title": "$(L,discard)",
+                            "ButtonType": "Text",
+                            "OnPress": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleDiscardAction.js",
+                            "IsVisible": "{@sap.hasPendingChanges}",
+                            "Styles": {
+                                "Value": "ObjectCellStyleRed"
+                            },
+                            "TextAlignment": "/SAPAssetManager/Rules/Common/Platform/ModalButtonAlign.js"
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.Button",
+                            "_Name": "WithdrawButton",
+                            "Title": "$(L,withdraw)",
+                            "ButtonType": "Text",
+                            "OnPress": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleWithdrawAction.js",
+                            "IsVisible": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleWithdrawButtonVisible.js",
+                            "Styles": {
+                                "Value": "ObjectCellStyleRed"
+                            },
+                            "TextAlignment": "/SAPAssetManager/Rules/Common/Platform/ModalButtonAlign.js"
+                        }
+                    ]
+                }
+
+            ],
+            "_Name": "FormCellContainer",
+            "_Type": "Control.Type.FormCellContainer"
+        }
+    ],
+    "_Type": "Page",
+    "_Name": "ZzOilSampleUpdatePage"
+}

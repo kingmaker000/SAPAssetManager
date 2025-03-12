@@ -1,0 +1,4 @@
+{
+    "_Type": "String",
+    "Value": "Tasks/TaskMobileStatus_Nav,WorkOrder,NotifPriority,NotifMobileStatus_Nav,NotifDocuments,NotifDocuments/Document,HeaderLongText,FunctionalLocation,Equipment,NotifMobileStatus_Nav/OverallStatusCfg_Nav&$filter=((Tasks/any(itm: ((itm/TaskMobileStatus_Nav/MobileStatus ne 'COMPLETED'  and itm/TaskMobileStatus_Nav/MobileStatus ne 'SUCCESS') and itm/TaskCode eq 'SUPA'))) or (Tasks/any(itm: ((itm/TaskMobileStatus_Nav/MobileStatus ne 'COMPLETED'  and itm/TaskMobileStatus_Nav/MobileStatus ne 'SUCCESS') and itm/TaskCode eq 'NPSA'))))"
+}

@@ -165,8 +165,14 @@ export default function NotificationCreateSuccess(context, createdNotif) {
         }
     }).then(() => {
         // eslint-disable-next-line brace-style
-        let createItem = !!(function() { try { return context.evaluateTargetPath('#Control:ItemDescription/#Value'); } catch (exc) { return ''; } })();
-        if (createItem) {
+        // Read the config parameters for which notif types the part and damage codes to be captured
+        var notifTypesEnablePart = new Array();
+        var notifTypesEnableDamage = new Array();
+        notifTypesEnablePart = libCommon.getAppParam(context, 'ZNOTIFICATION_CODES', 'NOTypes.Enable.Part').split(",");
+        notifTypesEnableDamage = libCommon.getAppParam(context, 'ZNOTIFICATION_CODES', 'NOTypes.Enable.Damage').split(",");
+
+        let notifType = (function() { try { return context.evaluateTargetPath('#Control:TypeLstPkr/#SelectedValue'); } catch (exc) { return ''; } })();
+        if (notifTypesEnablePart.includes(notifType) && notifTypesEnableDamage.includes(notifType)) {
             let links = [{
                 'Property' : 'Notification',
                 'Target':
@@ -188,6 +194,17 @@ export default function NotificationCreateSuccess(context, createdNotif) {
             return context.executeAction({
                 'Name': '/SAPAssetManager/Actions/Notifications/Item/NotificationItemCreate.action',
                 'Properties': {
+                    'Properties':
+                    {
+                        'NotificationNumber': '/SAPAssetManager/Rules/Notifications/ChangesetSwitchNotificationID.js',
+                        'ItemNumber' : '/SAPAssetManager/Rules/Notifications/Item/GenerateNotificationItemID.js',
+                        'ItemText' : createdNotif.NotificationDescription,
+                        'ObjectPartCodeGroup': '/SAPAssetManager/Rules/Parts/PartGroupLstPkrValue.js',
+                        'ObjectPart' : '/SAPAssetManager/Rules/Parts/Details/PartDetailsLstPkrValue.js',
+                        'CodeGroup': '/SAPAssetManager/Rules/Notifications/DamageGroupLstPkrValue.js',
+                        'DamageCode': '/SAPAssetManager/Rules/Notifications/DamageDetailsLstPkrValue.js',
+                        'ItemSortNumber': '/SAPAssetManager/Rules/Notifications/Item/ItemSortNumber.js'
+                    },
                     'OnSuccess' : '',
                 },
                 'CreateLinks': links,
@@ -197,23 +214,25 @@ export default function NotificationCreateSuccess(context, createdNotif) {
         }
     }).then(actionResult => {
         // eslint-disable-next-line brace-style
-        let createCause = !!(function() { try { return context.evaluateTargetPath('#Control:CauseDescription/#Value'); } catch (exc) { return ''; } })();
-        if (createCause) {
+        // Read the config parameters for which notif types the activity code to be captured
+        var notifTypesEnableActivity = new Array();
+        notifTypesEnableActivity = libCommon.getAppParam(context, 'ZNOTIFICATION_CODES', 'NOTypes.Enable.Activity').split(",");
+    
+        let notifType = (function() { try { return context.evaluateTargetPath('#Control:TypeLstPkr/#SelectedValue'); } catch (exc) { return ''; } })();
+        if (notifTypesEnableActivity.includes(notifType)) {
             let data = JSON.parse(actionResult.data);
             return context.executeAction({
-                'Name': '/SAPAssetManager/Actions/Notifications/Item/NotificationItemCauseCreate.action',
+                'Name': '/SAPAssetManager/Actions/Notifications/Item/NotificationItemActivityCreate.action',
                 'Properties': {
                     'Properties':
                     {
                         'NotificationNumber': data.NotificationNumber,
                         'ItemNumber' : data.ItemNumber,
-                        'CauseSequenceNumber' : '0001',
-                        'CauseText' : context.evaluateTargetPath('#Control:CauseDescription/#Value'),
-                        // eslint-disable-next-line brace-style
-                        'CauseCodeGroup': (function() { try { return context.evaluateTargetPath('#Control:CauseGroupLstPkr/#SelectedValue'); } catch (e) {return '';} })(),
-                        // eslint-disable-next-line brace-style
-                        'CauseCode' : (function() { try { return context.evaluateTargetPath('#Control:CodeLstPkr/#SelectedValue'); } catch (e) {return '';} })(),
-                        'CauseSortNumber' : '0001',
+                        "ActivitySequenceNumber" : "/SAPAssetManager/Rules/Notifications/Item/Activity/GenerateNotificationItemActivityID.js",
+                        "ActivityText" : data.ItemText,
+                        "ActivityCodeGroup": "/SAPAssetManager/Rules/Notifications/GroupLstPkrValue.js",
+                        "ActivityCode" : "/SAPAssetManager/Rules/Notifications/CodeLstPkrValue.js",
+                        "ActivitySortNumber" : "/SAPAssetManager/Rules/Notifications/Item/Activity/ItemActivitySortNumber.js"
                     },
                     'Headers':
                     {
@@ -235,6 +254,7 @@ export default function NotificationCreateSuccess(context, createdNotif) {
         } else {
             return Promise.reject({'skip': true}); // Skip cause create
         }
+
     }).catch((result) => {
         if (result.skip) {
             return Promise.resolve(); // Continue promise chain if not creating Item/Cause
@@ -254,3 +274,4 @@ export default function NotificationCreateSuccess(context, createdNotif) {
         return Promise.reject();
     });
 }
+

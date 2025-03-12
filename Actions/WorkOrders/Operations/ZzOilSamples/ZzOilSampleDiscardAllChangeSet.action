@@ -1,0 +1,15 @@
+{
+    "_Type": "Action.Type.ODataService.ChangeSet",
+	"Actions":
+	[
+		"/SAPAssetManager/Actions/WorkOrders/Operations/ZzOilSamples/ZzOilSampleBatchCreateDiscard.action",
+        "/SAPAssetManager/Actions/WorkOrders/Operations/ZzOilSamples/ZzOilSampleBatchDeleteDiscard.action",
+		"/SAPAssetManager/Actions/WorkOrders/Operations/ZzOilSamples/ZzOilSampleDiscard.action"
+	],
+	"Target":
+	{
+		"Service": "/SAPAssetManager/Services/AssetManager.service"
+	},
+	"OnSuccess": "/SAPAssetManager/Actions/WorkOrders/Operations/ZzOilSamples/ZzOilSampleDiscardSuccess.action",
+	"OnFailure": "/SAPAssetManager/Actions/WorkOrders/Operations/ZzOilSamples/ZzOilSampleDiscardFailure.action"
+}

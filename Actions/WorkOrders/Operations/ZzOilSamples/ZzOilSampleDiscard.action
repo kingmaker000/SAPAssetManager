@@ -1,0 +1,8 @@
+{
+	"_Type": "Action.Type.OfflineOData.UndoPendingChanges",
+	"Target": {
+		"EntitySet": "ZMyWorkOrderSamples",
+		"Service": "/SAPAssetManager/Services/AssetManager.service",
+		"EditLink": "{@odata.readLink}"
+	}
+}

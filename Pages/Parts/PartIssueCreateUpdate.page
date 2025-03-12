@@ -1,5 +1,5 @@
 {
-    "Caption": "$(L,issue_part)",
+    "Caption": "/SAPAssetManager/Rules/Parts/Issue/ZzPartIssueCaption.js",
     "OnLoaded": "/SAPAssetManager/Rules/Parts/Issue/CreateUpdate/PartIssueCreateUpdateOnPageLoad.js",
     "ActionBar": {
         "Items": [
@@ -37,6 +37,16 @@
                             "_Name": "MaterialSim",
                             "ReadOnly": true,
                             "IsEditable": false,
+                            "_Type": "Control.Type.FormCell.SimpleProperty"
+                        },
+                        {
+                            "Caption": "$(L,reason)",
+                            "PlaceHolder": "",
+                            "Value": "{{#Property:ZzReasonDescription}} ({{#Property:ZzReason}})",
+                            "_Name": "ZzReason",
+                            "ReadOnly": true,
+                            "IsEditable": false,
+                            "IsVisible": "/SAPAssetManager/Rules/Parts/Issue/CreateUpdate/ZzPartIssueUpdateZzReasonVisible.js",	
                             "_Type": "Control.Type.FormCell.SimpleProperty"
                         }
                     ]
@@ -157,6 +167,32 @@
                                 }
                             },
                             "IsVisible": "/SAPAssetManager/Rules/Parts/CreateUpdate/BatchPickerVisible.js"	
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.ListPicker",
+                            "_Name": "ZzEquipmentLstPkr", 
+                            "Caption": "$(L,equipment)",
+                            "Value" : "{EquipId}",
+                            "AllowDefaultValueIfOneItem": false,
+                            "AllowMultipleSelection": false,
+                            "IsPickerDismissedOnSelection": true,
+                            "Search": {
+                                "Enabled": true,
+                                "Delay": 500,
+                                "MinimumCharacterThreshold": 3,
+                                "Placeholder": "$(L,search)",
+                                "BarcodeScanner": true
+                            },
+                            "PickerItems": {
+                                "DisplayValue": "{{#Property:ZzOperatingNum}}; {{#Property:EquipDesc}} ({{#Property:EquipId}};{{#Property:InventoryNum}})",
+                                "ReturnValue": "{EquipId}",
+                                "Target": {
+                                    "EntitySet": "MyEquipments",
+                                    "Service": "/SAPAssetManager/Services/AssetManager.service",
+                                    "QueryOptions": "$orderby=EquipId"
+                                }
+                            },
+                            "IsVisible": "/SAPAssetManager/Rules/Parts/Issue/CreateUpdate/ZzPartIssueUpdateZzEquipmentLstPkrVisible.js"
                         },
                         {
                             "AllowEmptySelection": true,

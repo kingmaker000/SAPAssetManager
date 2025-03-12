@@ -1,7 +1,12 @@
 import libCommon from '../../Common/Library/CommonLibrary';
 import libPart from '../PartLibrary';
 
-const queryOption = '$select=MaterialDocNumber,GMCode,RelatedItem/EntryQuantity,RelatedItem/EntryUOM,RelatedItem/Material,RelatedItem/MaterialDocYear,RelatedItem/MovementType,RelatedItem/OrderNumber,RelatedItem/Plant,RelatedItem/ReservationItemNumber,RelatedItem/ReservationNumber,RelatedItem/StorageLocation,RelatedItem/MatDocItem&$expand=RelatedItem';
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Begin PG&E REPLACE: Add fields Movement Reason, Batch, and Equipment for fixing material document item error
+//const queryOption = '$select=MaterialDocNumber,GMCode,RelatedItem/EntryQuantity,RelatedItem/EntryUOM,RelatedItem/Material,RelatedItem/MaterialDocYear,RelatedItem/MovementType,RelatedItem/OrderNumber,RelatedItem/Plant,RelatedItem/ReservationItemNumber,RelatedItem/ReservationNumber,RelatedItem/StorageLocation,RelatedItem/MatDocItem&$expand=RelatedItem';
+const queryOption = '$select=MaterialDocNumber,GMCode,RelatedItem/EntryQuantity,RelatedItem/EntryUOM,RelatedItem/Material,RelatedItem/MaterialDocYear,RelatedItem/MovementType,RelatedItem/OrderNumber,RelatedItem/Plant,RelatedItem/ReservationItemNumber,RelatedItem/ReservationNumber,RelatedItem/StorageLocation,RelatedItem/MatDocItem,RelatedItem/MovementReason,RelatedItem/Batch,RelatedItem/ZzEquipment&$expand=RelatedItem';
+//End PG&E REPLACE: Add fields Movement Reason, Batch, and Equipment for fixing material document item error
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function PartIssueUpdateNav(context) {
     libCommon.setOnCreateUpdateFlag(context, 'UPDATE');

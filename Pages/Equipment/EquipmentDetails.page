@@ -36,16 +36,19 @@
                 {
                     "Layout":
                     {
-                        "NumberOfColumns": 1
+                        "NumberOfColumns": 2
                     },
                     "KeyAndValues":
-                    [{
-                        "KeyName": "$(L, location)",
-                        "Value": "/SAPAssetManager/Rules/Equipment/EquipmentLocationFormat.js",
-                        "OnPress": "/SAPAssetManager/Rules/Equipment/EquipmentMapNav.js",
-                        "Visible": "/SAPAssetManager/Rules/SideDrawer/IsFieldServiceTechnicianDisabled.js",
-                        "LinkColor": "/SAPAssetManager/Rules/Common/LocationNavFormat.js"
-                    }],
+                    [
+                        {
+                            "KeyName": "$(L, street_loc)",
+                            "Value": "{{#Property:Address/Street}}"
+                        },
+                        {
+                            "KeyName": "$(L, vault)",
+                            "Value": "{{#Property:ZzVault}}"
+                        }
+                    ],
                     "DataSubscriptions": ["Geometries", "EquipGeometries"],
                     "_Type": "Section.Type.KeyValue",
                     "_Name": "EquipmentLocationSection"
@@ -55,6 +58,14 @@
                         "Caption": "$(L,equipment_details)"
                     },
                     "KeyAndValues": [
+                        {
+                            "KeyName": "$(L,operating_num)",
+                            "Value": "{{#Property:ZzOperatingNum}}"
+                        },
+                        {
+                            "KeyName": "$(L,feeder)",
+                            "Value": "{{#Property:ZzFeeder}}"
+                        },
                         {
                             "KeyName": "$(L,plant)",
                             "Value": "/SAPAssetManager/Rules/FunctionalLocation/FormatPlanningPlant.js"
@@ -84,7 +95,7 @@
                             "Value": "/SAPAssetManager/Rules/Equipment/EquipmentSerialNumber.js"
                         },
                         {
-                            "KeyName": "$(L,inventory_number)",
+                            "KeyName": "$(L,barcode)",
                             "Value": "/SAPAssetManager/Rules/Equipment/EquipmentInventoryNumber.js"
                         },
                         {

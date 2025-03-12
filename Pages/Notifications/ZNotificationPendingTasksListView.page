@@ -1,0 +1,59 @@
+{
+    "Caption": "$(L,notification_tasks)",
+    "OnLoaded": "/SAPAssetManager/Rules/Notifications/ListView/ZdbFormat/ZNotificationsPendingTasksListViewSetCaption.js",
+    "OnReturning": "/SAPAssetManager/Rules/Notifications/ListView/ZdbFormat/ZOnNotificationPendigTasksReset.js",
+    "ActionBar": {
+        "Items": [
+            {
+                "Position": "right",
+                "Icon": "$(PLT,/SAPAssetManager/Images/sync.pdf,/SAPAssetManager/Images/sync.android.png)",
+                "OnPress": "/SAPAssetManager/Rules/ApplicationEvents/ApplicationOnSync.js"
+            }
+        ]
+    },
+    "Controls": [
+        {
+            "Sections": [
+                {
+                    "Search": {
+                        "Enabled": "/SAPAssetManager/Rules/Notifications/NotificationsSearchEnabled.js",
+                        "Delay": 500,
+                        "MinimumCharacterThreshold": 3,
+                        "Placeholder": "$(L,search)",
+                        "BarcodeScanner": true
+                    },
+                    "Header": {
+                        "UseTopPadding": false
+                    },
+                    "EmptySection": {
+                        "Caption": "$(L,no_notifications_available)"
+                   },
+                    "ObjectCell": {
+                        "Title": "{NotificationDescription}",
+                        "Subhead": "/SAPAssetManager/Rules/Notifications/ListView/ZdbFormat/ZNotificationsListViewTasksFormat.js",
+                        "AccessoryType": "disclosureIndicator",
+                        "Footnote": "/SAPAssetManager/Rules/Notifications/ListView/ZdbFormat/ZNotificationsListViewTasksFormat.js",
+                        "StatusText": "/SAPAssetManager/Rules/Notifications/ListView/ZdbFormat/ZNotificationsListViewTasksFormat.js",
+                        "SubstatusText": "/SAPAssetManager/Rules/Notifications/ListView/ZdbFormat/ZNotificationsListViewTasksFormat.js",
+                        "Styles": {
+                            "SubstatusText": "/SAPAssetManager/Rules/Supervisor/Reject/RejectedStatusStyle.js"
+                        },
+                        "OnPress": "/SAPAssetManager/Actions/Notifications/NotificationDetailsNav.action",
+                        "PreserveIconStackSpacing": false
+                    },
+                    "Target": {
+                        "EntitySet": "MyNotificationHeaders",
+                        "Service": "/SAPAssetManager/Services/AssetManager.service",
+                        "QueryOptions" : "/SAPAssetManager/Rules/Notifications/ZNotificationsListViewQueryOption.js"                   },
+                    "_Type": "Section.Type.ObjectTable",
+                    "_Name": "NotificationsList"
+                }
+            ],
+            "_Type": "Control.Type.SectionedTable",
+            "_Name": "SectionedTable"
+        }
+    ],
+    "_Type": "Page",
+    "_Name": "ZNotificationPendingTasksListView",
+    "DataSubscriptions": "/SAPAssetManager/Rules/Common/DataSubscriptions.js"
+}

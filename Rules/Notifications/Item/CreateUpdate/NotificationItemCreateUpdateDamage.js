@@ -8,6 +8,7 @@ export default function NotificationItemCreateUpdateDamage(context) {
         let codeGroup = context.getValue()[0].ReturnValue;
         var targetList = context.getPageProxy().evaluateTargetPathForAPI('#Control:DamageDetailsLstPkr');
         var specifier = targetList.getTargetSpecifier();
+        var page = context.getPageProxy().getControl('FormCellContainer');
 
         let notifLookup = Promise.resolve(binding.NotificationType);
 
@@ -37,11 +38,18 @@ export default function NotificationItemCreateUpdateDamage(context) {
                     specifier.setDisplayValue('{{#Property:Code}} - {{#Property:CodeDescription}}');
                     specifier.setReturnValue('{Code}');
 
-                    specifier.setEntitySet('PMCatalogCodes');
-                    specifier.setService('/SAPAssetManager/Services/AssetManager.service');
-
-                    common.setEditable(targetList, true);
+                    // specifier.setEntitySet('PMCatalogCodes');
+                    // specifier.setService('/SAPAssetManager/Services/AssetManager.service');
                     specifier.setQueryOptions(`$filter=CodeGroup eq '${codeGroup}' and Catalog eq '${notifType.getItem(0).CatTypeDefects}'`);
+
+                    // set the damage group and damage code fields editable
+                    common.setEditable(targetList, true);
+                    common.setEditable(targetListGrp, true);
+                         
+                    // set the damage group and damage code fields visible 
+                    page.getControl('DamageGroupLstPkr').setVisible(true);
+                    page.getControl('DamageDetailsLstPkr').setVisible(true);
+
                     return targetList.setTargetSpecifier(specifier);
                 } else { // PM Notification, No Defect
                     return notification.NotificationItemCreateUpdateDamage(context);

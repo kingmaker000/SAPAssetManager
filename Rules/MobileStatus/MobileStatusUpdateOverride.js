@@ -10,6 +10,22 @@ export default function MobileStatusUpdateOverride(context, status, mobileStatus
     const REVIEW = libCom.getAppParam(context, 'MOBILESTATUS', context.getGlobalDefinition('/SAPAssetManager/Globals/MobileStatus/ParameterNames/ReviewParameterName.global').getValue());
     let ignore = false;
 
+    //////////////////////////////////////////////////////////////////////////
+    // Begin PG&E INSERT (D0RB)
+    //
+    // Add confirmation popover dialog for specific mobile statuses
+    let validationRule = '';
+    switch (status.MobileStatus) {
+        case REVIEW:
+            validationRule = '/SAPAssetManager/Rules/MobileStatus/ZzMobileStatusReviewOperationDialog.js';           
+            break;
+        case COMPLETE:
+            validationRule = '/SAPAssetManager/Rules/MobileStatus/ZzMobileStatusCompleteOperationDialog.js';           
+            break;
+    }   
+    // End PG&E INSERT (D0RB)
+    //////////////////////////////////////////////////////////////////////////
+
     if (context.binding['@odata.type'] === '#sap_mobile.MyWorkOrderHeader') { //We pass up a dummy complete record here, since we don't yet know if complete checks will pass
         if (status.MobileStatus === COMPLETE || status.MobileStatus === REVIEW) {
             ignore = true;
@@ -26,7 +42,7 @@ export default function MobileStatusUpdateOverride(context, status, mobileStatus
             status.MobileStatus = 'D-' + dummy; //Need a dummy status so the actual status can be updated on this record later after successful checks
         }
     }
-  
+
     return {
         'Name': '/SAPAssetManager/Actions/MobileStatus/MobileStatusUpdate.action',
         'Properties':
@@ -61,6 +77,14 @@ export default function MobileStatusUpdateOverride(context, status, mobileStatus
                 },
             }],
             'OnSuccess': successAction,
+    //////////////////////////////////////////////////////////////////////////
+    // Begin PG&E INSERT (D0RB)
+    //
+    // Add confirmation dialog prerequisite to action
+            'ValidationRule': validationRule,
+    //End PG&E INSERT (D0RB)
+    //////////////////////////////////////////////////////////////////////////
+
             'ActionResult': {
                 '_Name': 'MobileStatusUpdate',
             },

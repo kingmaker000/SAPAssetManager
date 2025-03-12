@@ -58,6 +58,12 @@ export default function NotificationCreateUpdateOnPageLoad(context) {
             let endSwitch = formCellContainer.getControl('BreakdownEndSwitch');
             let breakdown = formCellContainer.getControl('BreakdownSwitch').getValue();
 
+            //Part group and code
+            let partGrp = formCellContainer.getControl('PartGroupLstPkr');
+            let partCode = formCellContainer.getControl('PartDetailsLstPkr');      
+            partGrp.setVisible(false);
+            partCode.setVisible(false);
+
             if (breakdown) {
                 startDate.setVisible(true);
                 startTime.setVisible(true);
@@ -93,18 +99,28 @@ export default function NotificationCreateUpdateOnPageLoad(context) {
         container.getControl('DamageGroupLstPkr').setTargetSpecifier(specifier);
     });
 
-    // Set Cause Group picker
-    libNotif.NotificationItemTaskActivityGroupQuery(context, 'CatTypeCauses').then(query => {
-        let specifier = container.getControl('CauseGroupLstPkr').getTargetSpecifier();
+    // Set Activity Group picker
+    libNotif.NotificationItemTaskActivityGroupQuery(context, 'CatTypeActivities').then(query => {
+        let specifier = container.getControl('GroupLstPkr').getTargetSpecifier();
         specifier.setQueryOptions(query);
-        container.getControl('CauseGroupLstPkr').setTargetSpecifier(specifier);
+        container.getControl('GroupLstPkr').setTargetSpecifier(specifier);
     });
-    if (userFeaturesLib.isFeatureEnabled(context,context.getGlobalDefinition('/SAPAssetManager/Globals/Features/QM.global').getValue())) {
-        libNotif.NotificationTaskActivityCodeQuery(context, 'CatTypeCauses', 'CauseCodeGroup').then(query => {
-            let specifier = container.getControl('CodeLstPkr').getTargetSpecifier();
-            specifier.setQueryOptions(query);
-            container.getControl('CodeLstPkr').setTargetSpecifier(specifier);
-        });
+
+    // hide or unhide the defect codes based on the Notification type selected
+    var page = context.getPageProxy().getControl('FormCellContainer');
+    var selectedNotifType = page.getControl('TypeLstPkr').getValue()[0].ReturnValue;
+    var notifTypesEnablePart = new Array();
+    var notifTypesEnableDamage = new Array();
+    var notifTypesEnableActivity = new Array();
+    notifTypesEnablePart = common.getAppParam(context, 'ZNOTIFICATION_CODES', 'NOTypes.Enable.Part').split(",");
+    notifTypesEnableDamage = common.getAppParam(context, 'ZNOTIFICATION_CODES', 'NOTypes.Enable.Damage').split(",");
+    notifTypesEnableActivity = common.getAppParam(context, 'ZNOTIFICATION_CODES', 'NOTypes.Enable.Activity').split(",");
+
+    if (notifTypesEnablePart.includes(selectedNotifType)) {
+        if (onCreate) {
+        page.getControl('PartGroupLstPkr').setVisible(true);
+        page.getControl('PartDetailsLstPkr').setVisible(true);
+        }
     }
 
     if (libNotif.getAddFromJobFlag(context)) {

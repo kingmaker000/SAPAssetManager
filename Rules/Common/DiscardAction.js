@@ -156,6 +156,13 @@ export default function DiscardAction(context) {
                         break;
                     case 'PhysicalInventoryDocHeader':
                         return removePhysicalInventoryDoc(context);
+                    //////////////////////////////////////////////////////////
+                    // Begin PG&E INSERT: Add case for discarding oil sample
+                    case 'ZMyWorkOrderSample':
+                        action = context.executeAction('/SAPAssetManager/Actions/WorkOrders/Operations/ZzOilSamples/ZzOilSampleDiscard.action');
+                        break;
+                    // End PG&E INSERT: Add case for discarding oil sample
+                    //////////////////////////////////////////////////////////
                     default:
                         break;
                 }

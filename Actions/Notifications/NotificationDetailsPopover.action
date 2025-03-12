@@ -3,7 +3,7 @@
 	[{
 		"Title": "$(L,add_item)",
 		"OnPress": "/SAPAssetManager/Rules/Notifications/Item/CreateUpdate/NotificationItemCreateNav.js",
-		"Visible": "/SAPAssetManager/Rules/UserAuthorizations/Notifications/EnableNotificationEdit.js"
+		"Visible": false
 
 	},
 	{
@@ -14,7 +14,7 @@
 	{
 		"Title": "$(L,add_activity)",
 		"OnPress": "/SAPAssetManager/Rules/Notifications/Activity/CreateUpdate/NotificationActivityCreateNav.js",
-		"Visible": "/SAPAssetManager/Rules/UserAuthorizations/Notifications/EnableNotificationEdit.js"
+		"Visible": false
 	},
 	{
 		"Title": "$(L,add_workorder)",

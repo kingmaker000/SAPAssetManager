@@ -54,11 +54,13 @@
 				"PreserveIconStackSpacing": true,
 				"Icons": "/SAPAssetManager/Rules/Operations/OperationsListViewIconImages.js",
 				"AccessoryType": "disclosureIndicator",
-				"Title": "{{#Property:OperationShortText}} ({{#Property:OperationNo}})",
-				"Footnote": "/SAPAssetManager/Rules/WorkOrders/Operations/WorkOrderDueDate.js",
-				"OnPress": "/SAPAssetManager/Rules/WorkOrders/Operations/Details/WorkOrderOperationDetailsNav.js",
-				"Subhead": "{OrderId}",
+				"Title": "/SAPAssetManager/Rules/WorkOrders/Operations/WorkOrderOperationsListViewFormat.js",
+				"Subhead": "/SAPAssetManager/Rules/WorkOrders/Operations/WorkOrderOperationsListViewFormat.js",
+				"Footnote": "/SAPAssetManager/Rules/WorkOrders/Operations/WorkOrderOperationsListViewFormat.js",
+				"Description": "/SAPAssetManager/Rules/WorkOrders/Operations/WorkOrderOperationsListViewFormat.js",
 				"StatusText": "/SAPAssetManager/Rules/WorkOrders/Operations/WorkOrderOperationsListViewFormat.js",
+				"SubstatusText": "/SAPAssetManager/Rules/WorkOrders/Operations/WorkOrderOperationsListViewFormat.js",
+				"OnPress": "/SAPAssetManager/Rules/WorkOrders/Operations/Details/WorkOrderOperationDetailsNav.js",
 				"ContextMenu": {
 					"PerformFirstActionWithFullSwipe": true,
 					"Items":"/SAPAssetManager/Rules/ContextMenuTable.js",
@@ -67,8 +69,7 @@
 				},
                 "Styles": {
                     "StatusText": "/SAPAssetManager/Rules/Supervisor/Reject/RejectedStatusStyle.js"
-                },
-                "Description": "/SAPAssetManager/Rules/WorkOrders/Operations/WorkOrderOperationsListViewDescription.js"
+                }
 			},
 			"Target": {
 				"EntitySet": "/SAPAssetManager/Rules/WorkOrders/Operations/OperationsEntitySet.js",

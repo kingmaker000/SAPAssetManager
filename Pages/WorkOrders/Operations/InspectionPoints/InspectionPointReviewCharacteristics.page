@@ -46,7 +46,7 @@
 			{
 				"EntitySet": "{{#Property:@odata.readLink}}/InspectionChar_Nav",
 				"Service": "/SAPAssetManager/Services/AssetManager.service",
-				"QueryOptions": "$expand=InspectionCode_Nav,InspValuation_Nav"
+				"QueryOptions": "$expand=InspectionCode_Nav,InspValuation_Nav&$orderby=InspectionChar"
 			},
 			"_Name": "InspectionCharacteristicSection",
 			"StickyColumn": false,

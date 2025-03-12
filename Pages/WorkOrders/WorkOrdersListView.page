@@ -54,9 +54,10 @@
 				"PreserveIconStackSpacing": true,
 				"Icons": "/SAPAssetManager/Rules/WorkOrders/ListView/WorkOrderListViewIconImages.js",
 				"Title": "{OrderDescription}",
-				"Subhead": "{{#Property:OrderId}} - {{#Property:OrderType}}",
-				"Footnote": "/SAPAssetManager/Rules/DateTime/DueDate.js",
-				"StatusText": "#Property:WOPriority/#Property:PriorityDescription",
+				"Subhead": "{{#Property:OrderId}} - {{#Property:OrderType}} - {{#Property:MaintenanceActivityType}} - {{#Property:WOPriority/#Property:PriorityDescription}}",
+				"Footnote": "/SAPAssetManager/Rules/WorkOrders/ListView/WorkOrdersListViewFormat.js",
+				"Description": "/SAPAssetManager/Rules/WorkOrders/ListView/WorkOrdersListViewFormat.js",
+				"StatusText": "{Equipment/ZzFeeder}",
 				"SubstatusText": "/SAPAssetManager/Rules/WorkOrders/ListView/WorkOrdersListViewFormat.js",
                 "Styles": {
 					"StatusText":  "/SAPAssetManager/Rules/Priority/WOPriorityStatusStyle.js",
@@ -64,7 +65,6 @@
                 },
 				"AccessoryType": "disclosureIndicator",
 				"OnPress" : "/SAPAssetManager/Rules/WorkOrders/WorkOrderDetailsNav.js",
-				"Description": "/SAPAssetManager/Rules/WorkOrders/ListView/WorkOrderListViewDescription.js",
 				"ContextMenu": {
 					"PerformFirstActionWithFullSwipe": true,
 					"Items":"/SAPAssetManager/Rules/ContextMenuTable.js",

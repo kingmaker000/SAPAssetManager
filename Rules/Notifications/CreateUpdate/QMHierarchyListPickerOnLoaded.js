@@ -13,7 +13,16 @@ function setDefaultListPickerValue(context, name) {
     if (name === 'FuncLocHierarchyExtensionControl') {
         value = formCellContainer.getControl('FuncLocHierarchyExtensionControl').getValue();
         if (!value) {
-            value = context.binding.InspectionPoint_Nav.FuncLoc_Nav.FuncLocIdIntern;
+            ///////////////////////////////////////////////////////////////////////////////
+            // Begin PG&E Enhancement (D0RB)
+            // Commented line that dumps because FuncLoc_Nav is null.  Replaced with code
+            //   to use the inspection lot's work order header equipment, because there is
+            //   only ever one inspection point per lot per work order for PG&E Networks.
+            //
+            //value = context.binding.InspectionPoint_Nav.FuncLoc_Nav.FuncLocIdIntern;
+            value = context.binding.InspectionLot_Nav.WOHeader_Nav.HeaderFunctionLocation;
+            // End PG&E Enhancement (D0RB)
+            ///////////////////////////////////////////////////////////////////////////////
         }
         if (value) {
             extension = formCellContainer.getControl('FuncLocHierarchyExtensionControl')._control._extension;

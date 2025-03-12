@@ -168,7 +168,8 @@ export default function NotificationCreateUpdateOnCommit(clientAPI) {
                 },
             }).then(() => {
                 // eslint-disable-next-line brace-style
-                let createItem = !!(function() { try { return clientAPI.evaluateTargetPath('#Control:ItemDescription/#Value'); } catch (exc) { return ''; } })();
+                // let createItem = !!(function() { try { return clientAPI.evaluateTargetPath('#Control:ItemDescription/#Value'); } catch (exc) { return ''; } })();
+                let createItem = false; // do not create item on Notification header edit. 
                 if (createItem) {
                     return clientAPI.executeAction({
                         'Name': '/SAPAssetManager/Actions/Notifications/Item/NotificationItemCreate.action',
@@ -180,45 +181,79 @@ export default function NotificationCreateUpdateOnCommit(clientAPI) {
                     return Promise.reject(); // Skip item and cause create
                 }
             }).then(actionResult => {
+            //** Commented out below section for removing the Cause group and cause code */    
                 // eslint-disable-next-line brace-style
-                let createCause = !!(function() { try { return clientAPI.evaluateTargetPath('#Control:CauseDescription/#Value'); } catch (exc) { return ''; } })();
-                if (createCause) {
-                    let data = JSON.parse(actionResult.data);
-                    return clientAPI.executeAction({
-                        'Name': '/SAPAssetManager/Actions/Notifications/Item/NotificationItemCauseCreate.action',
-                        'Properties': {
-                            'Properties':
-                            {
-                                'NotificationNumber': data.NotificationNumber,
-                                'ItemNumber' : data.ItemNumber,
-                                'CauseSequenceNumber' : '0001',
-                                'CauseText' : clientAPI.evaluateTargetPath('#Control:CauseDescription/#Value'),
-                                // eslint-disable-next-line brace-style
-                                'CauseCodeGroup': (function() { try { return clientAPI.evaluateTargetPath('#Control:CauseGroupLstPkr/#SelectedValue'); } catch (e) {return '';} })(),
-                                // eslint-disable-next-line brace-style
-                                'CauseCode' : (function() { try { return clientAPI.evaluateTargetPath('#Control:CodeLstPkr/#SelectedValue'); } catch (e) {return '';} })(),
-                                'CauseSortNumber' : '0001',
-                            },
-                            'Headers':
-                            {
-                                'OfflineOData.RemoveAfterUpload': 'true',
-                                'OfflineOData.TransactionID': data.NotificationNumber,
-                            },
-                            'CreateLinks':
-                            [{
-                                'Property' : 'Item',
-                                'Target':
-                                {
-                                    'EntitySet' : 'MyNotificationItems',
-                                    'ReadLink' : data['@odata.readLink'],
-                                },
-                            }],
-                            'OnSuccess' : '',
+                // let createCause = !!(function() { try { return clientAPI.evaluateTargetPath('#Control:CauseDescription/#Value'); } catch (exc) { return ''; } })();
+                // if (createCause) {
+                //     let data = JSON.parse(actionResult.data);
+                //     return clientAPI.executeAction({
+                //         'Name': '/SAPAssetManager/Actions/Notifications/Item/NotificationItemCauseCreate.action',
+                //         'Properties': {
+                //             'Properties':
+                //             {
+                //                 'NotificationNumber': data.NotificationNumber,
+                //                 'ItemNumber' : data.ItemNumber,
+                //                 'CauseSequenceNumber' : '0001',
+                //                 'CauseText' : clientAPI.evaluateTargetPath('#Control:CauseDescription/#Value'),
+                //                 // eslint-disable-next-line brace-style
+                //                 'CauseCodeGroup': (function() { try { return clientAPI.evaluateTargetPath('#Control:CauseGroupLstPkr/#SelectedValue'); } catch (e) {return '';} })(),
+                //                 // eslint-disable-next-line brace-style
+                //                 'CauseCode' : (function() { try { return clientAPI.evaluateTargetPath('#Control:CodeLstPkr/#SelectedValue'); } catch (e) {return '';} })(),
+                //                 'CauseSortNumber' : '0001',
+                //             },
+                //             'Headers':
+                //             {
+                //                 'OfflineOData.RemoveAfterUpload': 'true',
+                //                 'OfflineOData.TransactionID': data.NotificationNumber,
+                //             },
+                //             'CreateLinks':
+                //             [{
+                //                 'Property' : 'Item',
+                //                 'Target':
+                //                 {
+                //                     'EntitySet' : 'MyNotificationItems',
+                //                     'ReadLink' : data['@odata.readLink'],
+                //                 },
+                //             }],
+                //             'OnSuccess' : '',
+                //         },
+                //     });
+                // } else {
+                //     return Promise.reject(); // Skip cause create
+                // }
+
+                // Adding Activity for the item created
+                let data = JSON.parse(actionResult.data);
+                return clientAPI.executeAction({
+                    'Name': '/SAPAssetManager/Actions/Notifications/Item/NotificationItemActivityCreate.action',
+                    'Properties': {
+                        'Properties':
+                        {
+                            'NotificationNumber': data.NotificationNumber,
+                            'ItemNumber' : data.ItemNumber,
+                            "ActivitySequenceNumber" : "/SAPAssetManager/Rules/Notifications/Item/Activity/GenerateNotificationItemActivityID.js",
+                            "ActivityText" : data.ItemText,
+                            "ActivityCodeGroup": "/SAPAssetManager/Rules/Notifications/GroupLstPkrValue.js",
+                            "ActivityCode" : "/SAPAssetManager/Rules/Notifications/CodeLstPkrValue.js",
+                            "ActivitySortNumber" : data.ItemSortNumber
                         },
-                    });
-                } else {
-                    return Promise.reject(); // Skip cause create
-                }
+                        'Headers':
+                        {
+                            'OfflineOData.RemoveAfterUpload': 'true',
+                            'OfflineOData.TransactionID': data.NotificationNumber,
+                        },
+                        'CreateLinks':
+                        [{
+                            'Property' : 'Item',
+                            'Target':
+                            {
+                                'EntitySet' : 'MyNotificationItems',
+                                'ReadLink' : data['@odata.readLink'],
+                            },
+                        }],
+                        'OnSuccess' : '',
+                    },
+                });                
             }).catch(() => {
                 return Promise.resolve(); // Continue action chain
             }).then(() => {

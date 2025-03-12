@@ -1,0 +1,8 @@
+{
+	"_Type": "Action.Type.OfflineOData.UndoPendingChanges",
+	"Target": {
+		"EntitySet": "MaterialBatches",
+		"Service": "/SAPAssetManager/Services/AssetManager.service",
+		"EditLink": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleBatchWithdrawnReadLink.js"
+	}
+}

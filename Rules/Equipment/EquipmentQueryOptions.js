@@ -16,8 +16,18 @@ export default function EquipmentQueryOptions(context) {
     let searchString = context.searchString;
     if (searchString) {
         let qob = context.dataQueryBuilder();
-        qob.expand('ObjectStatus_Nav/SystemStatus_Nav,EquipDocuments,EquipDocuments/Document,WorkOrderHeader,WorkCenter_Main_Nav').orderBy('EquipId').select('ObjectStatus_Nav/SystemStatus_Nav/StatusText,WorkOrderHeader/OrderId,EquipDesc,EquipId,PlanningPlant,MaintPlant,WorkCenter');
+        //Begin PG&E REPLACE: Add additional fields to search list
+        //qob.expand('ObjectStatus_Nav/SystemStatus_Nav,EquipDocuments,EquipDocuments/Document,WorkOrderHeader,WorkCenter_Main_Nav').orderBy('EquipId').select('ObjectStatus_Nav/SystemStatus_Nav/StatusText,WorkOrderHeader/OrderId,EquipDesc,EquipId,PlanningPlant,MaintPlant,WorkCenter');
+        qob.expand('ObjectStatus_Nav/SystemStatus_Nav,EquipDocuments,EquipDocuments/Document,WorkOrderHeader,WorkCenter_Main_Nav,Address').orderBy('EquipId').select('ObjectStatus_Nav/SystemStatus_Nav/StatusText,WorkOrderHeader/OrderId,EquipDesc,EquipId,PlanningPlant,MaintPlant,WorkCenter,InventoryNum,ZzFeeder,ZzOperatingNum,ZzVault');
+        //End PG&E REPLACE: Add additional fields to search list
         let filters = [
+            //Begin PG&E INSERT: Expose additional fields to search
+            `substringof('${searchString.toLowerCase()}', tolower(InventoryNum))`,
+            `substringof('${searchString.toLowerCase()}', tolower(ZzOperatingNum))`,
+            `substringof('${searchString.toLowerCase()}', tolower(ZzFeeder))`,
+            `substringof('${searchString.toLowerCase()}', tolower(ZzVault))`,
+            `substringof('${searchString.toLowerCase()}', tolower(Address/Street))`,
+            //End PG&E INSERT: Expose additional fields to search            
             `substringof('${searchString.toLowerCase()}', tolower(EquipDesc))`,
             `substringof('${searchString.toLowerCase()}', tolower(WorkCenter_Main_Nav/PlantId))`,
             `substringof('${searchString.toLowerCase()}', tolower(WorkCenter_Main_Nav/WorkCenterDescr))`,
@@ -28,8 +38,8 @@ export default function EquipmentQueryOptions(context) {
         qob.filter(filters.join(' or '));
         return qob;
     } else {
-        return '$select=*,MeasuringPoints/Point,ObjectStatus_Nav/SystemStatus_Nav/StatusText,WorkOrderHeader/OrderId' +
+        return '$select=*,MeasuringPoints/Point,ObjectStatus_Nav/SystemStatus_Nav/StatusText,WorkOrderHeader/OrderId,Address/Street' +
             '&$orderby=EquipId' +
-            '&$expand=MeasuringPoints,ObjectStatus_Nav/SystemStatus_Nav,EquipDocuments,EquipDocuments/Document,WorkOrderHeader,WorkCenter_Main_Nav';
+            '&$expand=MeasuringPoints,ObjectStatus_Nav/SystemStatus_Nav,EquipDocuments,EquipDocuments/Document,WorkOrderHeader,WorkCenter_Main_Nav,Address';
     }
 }

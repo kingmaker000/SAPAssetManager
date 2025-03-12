@@ -10,6 +10,7 @@
         ]
     },
     "Caption": "$(L, create_defect)",
+    "OnLoaded" : "/SAPAssetManager/Rules/Notifications/ZQMNotificationCreateUpdateOnLoaded.js",
     "Controls":
     [{
         "Sections":
@@ -205,6 +206,7 @@
                 "AllowMultipleSelection": false,
                 "IsPickerDismissedOnSelection": true,
                 "IsSearchCancelledAfterSelection": true,
+                "AllowDefaultValueIfOneItem": true,
                 "Search": {
                        "Enabled": true,
                           "Delay": 500,
@@ -214,6 +216,7 @@
                 },
                 "Caption": "$(L,part_group)",
                 "Value" : "{ObjectPartCodeGroup}",
+                "IsVisible": false,
                 "PickerItems":
                 {
                     "DisplayValue" : "{{#Property:CodeGroup}} - {{#Property:Description}}",
@@ -241,19 +244,11 @@
                     "BarcodeScanner": true
                 },
                 "IsEditable" : false,
+                "IsVisible": false,
                 "Caption": "$(L,part)",
                 "Value" : "{ObjectPart}",
-                "PickerItems":
-                {
-                    "DisplayValue" : "{{#Property:Code}} - {{#Property:CodeDescription}}",
-                    "ReturnValue": "{Code}",
-                    "Target":
-                    {
-                        "EntitySet" : "PMCatalogCodes",
-                        "Service" : "/SAPAssetManager/Services/AssetManager.service",
-                        "QueryOptions" : "/SAPAssetManager/Rules/Notifications/Item/NotificationItemPartCodeQuery.js"
-                    }
-                },
+                "PickerItems": "/SAPAssetManager/Rules/Notifications/CreateUpdate/ZNotificationPartCodeListPicker.js",
+                "OnValueChange" : "/SAPAssetManager/Rules/Notifications/Item/CreateUpdate/ZNotificationItemCreateUpdateDamage.js",
                 "_Name": "PartDetailsLstPkr",
                 "_Type": "Control.Type.FormCell.ListPicker"
             }]
@@ -264,6 +259,7 @@
                 "AllowMultipleSelection": false,
                 "IsPickerDismissedOnSelection": true,
                 "IsSearchCancelledAfterSelection": true,
+                "AllowDefaultValueIfOneItem": true,
                 "Search": {
                        "Enabled": true,
                           "Delay": 500,
@@ -273,6 +269,8 @@
                 },
                 "Caption": "$(L,damage_group)",
                 "Value" : "{CodeGroup}",
+                "IsEditable" : false,
+                "IsVisible": false,
                 "PickerItems":
                 {
                     "DisplayValue" : "{{#Property:CodeGroup}} - {{#Property:Description}}",
@@ -288,35 +286,98 @@
                 "_Name": "DamageGroupLstPkr",
                 "_Type": "Control.Type.FormCell.ListPicker"
             },
-            {
-                "AllowMultipleSelection": false,
-                "IsPickerDismissedOnSelection": true,
-                "IsSearchCancelledAfterSelection": true,
-                "Search": {
-                       "Enabled": true,
-                          "Delay": 500,
-                    "MinimumCharacterThreshold": 3,
-                    "Placeholder": "$(L,search)",
-                    "BarcodeScanner": true
-                },
-                "IsEditable" : false,
-                "Caption": "$(L,damage)",
-                "Value" : "{DamageCode}",
-                "PickerItems":
                 {
-                    "DisplayValue" : "{{#Property:Code}} - {{#Property:CodeDescription}}",
-                    "ReturnValue": "{Code}",
-                    "Target":
+                    "AllowMultipleSelection": false,
+                    "IsPickerDismissedOnSelection": true,
+                    "IsSearchCancelledAfterSelection": true,
+                    "AllowDefaultValueIfOneItem": true,
+                    "Search": {
+                        "Enabled": true,
+                        "Delay": 500,
+                        "MinimumCharacterThreshold": 3,
+                        "Placeholder": "$(L,search)",
+                        "BarcodeScanner": true
+                    },
+                    "IsEditable" : false,
+                    "IsVisible": false,
+                    "Caption": "$(L,damage)",
+                    "PickerItems":  
                     {
-                        "EntitySet" : "PMCatalogCodes",
-                        "Service" : "/SAPAssetManager/Services/AssetManager.service",
-                        "QueryOptions" : "/SAPAssetManager/Rules/Notifications/Item/NotificationItemDamageCodeQuery.js"
-                    }
+                        "DisplayValue" : "{{#Property:DamageCode}} - {{#Property:DamageDesc}}",
+                        "ReturnValue": "{DamageCode}",
+                        "Target":
+                        {
+                            "EntitySet" : "ZFdaMatrices",
+                            "Service" : "/SAPAssetManager/Services/AssetManager.service"
+                        }
+                    },                    
+                    "OnValueChange" : "/SAPAssetManager/Rules/Notifications/Item/CreateUpdate/ZNotificationItemCreateUpdateActivity.js",
+                    "_Name": "DamageDetailsLstPkr",
+                    "_Type": "Control.Type.FormCell.ListPicker"
+                }]
+        },
+            {
+                "Controls":
+                [{
+                    "AllowMultipleSelection": false,
+                    "IsPickerDismissedOnSelection": true,
+                    "IsSearchCancelledAfterSelection": true,
+                    "AllowDefaultValueIfOneItem": true,
+                    "Search": {
+                        "Enabled": true,
+                        "Delay": 500,
+                        "MinimumCharacterThreshold": 3,
+                        "Placeholder": "$(L,search)",
+                        "BarcodeScanner": true
+                    },
+                    "Caption": "$(L,activity_group)",
+                    "Value": "{ActivityCodeGroup}",
+                    "IsEditable" : false,
+                    "IsVisible": false,
+                    "PickerItems":
+                    {
+                        "DisplayValue" : "{{#Property:CodeGroup}} - {{#Property:Description}}",
+                        "ReturnValue": "{CodeGroup}",
+                        "Target":
+                        {
+                            "EntitySet" : "PMCatalogProfiles",
+                            "Service" : "/SAPAssetManager/Services/AssetManager.service",
+                            "QueryOptions" : "/SAPAssetManager/Rules/Notifications/Activity/NotificationActivityGroupQuery.js"
+                        }
+                    },
+                    "_Name": "GroupLstPkr",
+                    "_Type": "Control.Type.FormCell.ListPicker"
                 },
-                "_Name": "DamageDetailsLstPkr",
-                "_Type": "Control.Type.FormCell.ListPicker"
-            }]
-        }],
+                {
+                    "AllowMultipleSelection": false,
+                    "AllowDefaultValueIfOneItem": true,
+                    "IsPickerDismissedOnSelection": true,
+                    "IsSearchCancelledAfterSelection": true,
+                    "IsEditable" : false,
+                    "IsVisible": false,
+                    "Search": {
+                        "Enabled": true,
+                        "Delay": 500,
+                        "MinimumCharacterThreshold": 3,
+                        "Placeholder": "$(L,search)",
+                        "BarcodeScanner": true
+                    },
+                    "Caption": "$(L,activity)",
+                    "PickerItems":
+                    {
+                        "DisplayValue" : "{{#Property:TaskCode}} - {{#Property:ActivityDesc}}",
+                        "ReturnValue": "{TaskCode}",
+                        "Target":
+                        {
+                            "EntitySet" : "ZFdaMatrices",
+                            "Service" : "/SAPAssetManager/Services/AssetManager.service"
+                        }
+                    },
+                    "_Name": "CodeLstPkr",
+                    "_Type": "Control.Type.FormCell.ListPicker"
+                }]
+            }
+        ],
         "_Name": "FormCellContainer",
         "_Type": "Control.Type.FormCellContainer"
     }],

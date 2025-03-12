@@ -273,7 +273,10 @@ export class WorkOrderLibrary {
     static getWorkOrdersListViewQueryOptions(context) {
         let queryBuilder = context.dataQueryBuilder();
         queryBuilder.select('*,OrderMobileStatus_Nav/*,WODocuments/DocumentID,WOPartners/Employee_Nav/EmployeeName,WOPartners/PartnerFunction,MarkedJob/PreferenceValue,WOPriority/PriorityDescription');
+        //Begin PG&E Replace: Expand Equipment and Equipment Address
         queryBuilder.expand('WODocuments,WODocuments/Document,OrderMobileStatus_Nav/OverallStatusCfg_Nav,Operations,Operations/SubOperations,WOPriority,MarkedJob,UserTimeEntry_Nav,WOPartners,WOPartners/Employee_Nav');
+        queryBuilder.expand('WODocuments,WODocuments/Document,OrderMobileStatus_Nav/OverallStatusCfg_Nav,Operations,Operations/SubOperations,WOPriority,MarkedJob,UserTimeEntry_Nav,WOPartners,WOPartners/Employee_Nav,Equipment,Equipment/Address');
+        //End PG&E Replace: Expand Equipment and Equipment Address
         queryBuilder.orderBy('Priority,DueDate,OrderId,WODocuments/DocumentID,OrderMobileStatus_Nav/MobileStatus');
         return queryBuilder;
     }
@@ -1213,6 +1216,36 @@ export class WorkOrderEventLibrary {
             case 'HighPriorityOrdersSection':
             case 'ServiceOrders':
                 switch (property) {
+                    //Begin PG&E Insert
+                    case 'Footnote':
+                        //Display <Operating Num>; <Equipment Description>; <Barcode>
+                        if (context.binding.Equipment.ZzOperatingNum) {
+                            value = context.binding.Equipment.ZzOperatingNum;
+                        } else {
+                            value = '<' + context.localizeText('operating_num') + '>';
+                        }
+                        value = value + '; ' + context.binding.Equipment.EquipDesc;
+                        if (context.binding.Equipment.InventoryNum) {
+                            value = value + '; ' + context.binding.Equipment.InventoryNum;
+                        } else {
+                            value = value + '; <' + context.localizeText('barcode') + '>';
+                        }
+                        break;
+                    case 'Description':
+                        //Display <Street Location>, Vault <Vault>
+                        if (context.binding.Equipment.Address.Street) {
+                            value = context.binding.Equipment.Address.Street;
+                        } else {
+                            value = '<' + context.localizeText('street_loc') + '>';
+                        }
+                        value = value + ', ' + context.localizeText('vault') + ' ';
+                        if (context.binding.Equipment.ZzVault) {
+                            value = value + context.binding.Equipment.ZzVault;
+                        } else {
+                            value = value + '<' + context.localizeText('vault') + '>';
+                        }
+                        break;                  
+                    //End PG&E Insert
                     case 'StatusText':
                         try {
                             //Priorities and OrderTypes were cached prior to list screen loading
@@ -1271,6 +1304,8 @@ export class WorkOrderEventLibrary {
         var status =  OperationMobileStatus(context);
         var woStarted = libCommon.getAppParam(context, 'MOBILESTATUS', context.getGlobalDefinition('/SAPAssetManager/Globals/MobileStatus/ParameterNames/StartParameterName.global').getValue());
 
+        //Begin PG&E Replace: Reformat WO Operations List
+        /*
         if (((property === 'StatusText') && (section === 'WorkOrderOperationListSection')) || (section === 'OperationsObjectTable')) {
             return libMobile.isMobileStatusConfirmed(context).then(function(confirmed) {
                 if (confirmed) {
@@ -1291,6 +1326,102 @@ export class WorkOrderEventLibrary {
             }
         }
         return '';
+        */
+
+        var value = '';
+        switch (section) {
+            case 'SupervisorSectionForOperations':
+            case 'TechnicianSectionForOperations':
+            case 'ServiceOperations':
+                switch(property) {
+                    case 'Footnote':
+                        //Display <Operating Num>; <Equipment Description>; <Barcode>
+                        if (context.binding.WOHeader.Equipment.ZzOperatingNum) {
+                            value = context.binding.WOHeader.Equipment.ZzOperatingNum;
+                        } else {
+                            value = '<' + context.localizeText('operating_num') + '>';
+                        }
+                        value = value + '; ' + context.binding.WOHeader.Equipment.EquipDesc;
+                        break;
+                    case 'SubstatusText':
+                        if (libClock.isBusinessObjectClockedIn(context) && status.toUpperCase() === woStarted) { //Clock in/out feature enabled and user is clocked in to this Operation, regardless of mobile status
+                            value = context.localizeText(woStarted) + '-' + context.localizeText('clocked_in');
+                        } else {
+                            value = status;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case 'WorkOrderOperationListSection':
+                switch (property) {
+                    case 'Title':
+                        //Display <Operation Short Text> (<Operation Number>)
+                        value = context.binding.OperationShortText + ' (' + context.binding.OperationNo + ')';
+                        break;
+                    case 'Subhead':
+                        //Display <Work Order Description> (<Work Order ID>)
+                        value = context.binding.WOHeader.OrderDescription + ' (' + context.binding.WOHeader.OrderId + ')';
+                        break;
+                    case 'Footnote':
+                        //Display <Operating Num>; <Equipment Description>; <Barcode>
+                        if (context.binding.WOHeader.Equipment.ZzOperatingNum) {
+                            value = context.binding.WOHeader.Equipment.ZzOperatingNum;
+                        } else {
+                            value = '<' + context.localizeText('operating_num') + '>';
+                        }
+                        value = value + '; ' + context.binding.WOHeader.Equipment.EquipDesc;
+                        if (context.binding.WOHeader.Equipment.InventoryNum) {
+                            value = value + '; ' + context.binding.WOHeader.Equipment.InventoryNum;
+                        } else {
+                            value = value + '; <' + context.localizeText('barcode') + '>';
+                        }
+                        break;
+                    case 'Description':
+                        //Display <Street Location>, Vault <Vault>
+                        if (context.binding.WOHeader.Equipment.Address.Street) {
+                            value = context.binding.WOHeader.Equipment.Address.Street;
+                        } else {
+                            value = '<' + context.localizeText('street_loc') + '>';
+                        }
+                        value = value + ', ' + context.localizeText('vault') + ' ';
+                        if (context.binding.WOHeader.Equipment.ZzVault) {
+                            value = value + context.binding.WOHeader.Equipment.ZzVault;
+                        } else {
+                            value = value + '<' + context.localizeText('vault') + '>';
+                        }
+                        break;
+                    case 'StatusText':
+                        //Display <Operation Mobile Status>
+                        value = libMobile.isMobileStatusConfirmed(context).then(function(confirmed) {
+                            if (confirmed) {
+                                var complete = libCommon.getAppParam(context, 'MOBILESTATUS', context.getGlobalDefinition('/SAPAssetManager/Globals/MobileStatus/ParameterNames/CompleteParameterName.global').getValue());
+                                return context.localizeText(complete);
+                            } else if (libClock.isBusinessObjectClockedIn(context) && status.toUpperCase() === woStarted) { //Clock in/out feature enabled and user is clocked in to this Operation, regardless of mobile status
+                                return context.localizeText(woStarted) + '-' + context.localizeText('clocked_in');
+                            } else {
+                                return status;
+                            }
+                        });
+                        break;
+                    case 'SubstatusText':
+                        //Display feeder (circuit)
+                        if (context.binding.WOHeader.Equipment.ZzFeeder) {
+                            value = context.binding.WOHeader.Equipment.ZzFeeder;
+                        } else {
+                            value = '<' + context.localizeText('feeder') + '>';
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+        return value;
+        //End PG&E Replace: Reformat WO Operations List
     }
 }
 

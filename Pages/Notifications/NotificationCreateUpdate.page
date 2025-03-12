@@ -171,8 +171,8 @@
                             "Properties":{
                                 "ID":"{@odata.readLink}",
                                 "Title":"{EquipDesc}",
-                                "Subhead":"{EquipId}",
-                                "Footnote": "$(L, equipment)",
+                                "Subhead":"{ZzOperatingNum}; Vault {ZzVault}",
+                                "Footnote": "{EquipId} ({InventoryNum})",
                                 "ChildCount": "/SAPAssetManager/Rules/HierarchyControl/ChildCountListPicker.js",
                                 "Parent": [
                                     {
@@ -609,8 +609,10 @@
                 "Controls":
                 [{
                     "Caption": "$(L,notification_item)",
+                    "IsVisible": false,
                     "PlaceHolder": "$(L,item_description)",
                     "OnValueChange": "/SAPAssetManager/Rules/Common/Validation/FormCellNoteValidation.js",
+                    "Value": "{NotificationDescription}",
                     "_Name": "ItemDescription",
                     "_Type": "Control.Type.FormCell.Note"
                 }]
@@ -620,6 +622,7 @@
                 [{
                     "AllowMultipleSelection": false,
                     "IsPickerDismissedOnSelection": true,
+                    "AllowDefaultValueIfOneItem": true,
                     "IsSearchCancelledAfterSelection": true,
                     "Search":
                     {
@@ -656,18 +659,10 @@
                         "Placeholder": "$(L,search)",
                         "BarcodeScanner": true
                     },
-                    "IsEditable" : false,
+                    "IsEditable" : true,
                     "Caption": "$(L,part)",
-                    "PickerItems":
-                    {
-                        "DisplayValue" : "{{#Property:Code}} - {{#Property:CodeDescription}}",
-                        "ReturnValue": "{Code}",
-                        "Target":
-                        {
-                            "EntitySet" : "PMCatalogCodes",
-                            "Service" : "/SAPAssetManager/Services/AssetManager.service"
-                        }
-                    },
+                    "PickerItems": "/SAPAssetManager/Rules/Notifications/CreateUpdate/ZNotificationPartCodeListPicker.js",
+                    "OnValueChange" : "/SAPAssetManager/Rules/Notifications/Item/CreateUpdate/ZNotificationItemCreateUpdateDamage.js",
                     "_Name": "PartDetailsLstPkr",
                     "_Type": "Control.Type.FormCell.ListPicker"
                 }]
@@ -678,6 +673,7 @@
                     "AllowMultipleSelection": false,
                     "IsPickerDismissedOnSelection": true,
                     "IsSearchCancelledAfterSelection": true,
+                    "AllowDefaultValueIfOneItem": true,
                     "Search": {
                         "Enabled": true,
                         "Delay": 500,
@@ -686,6 +682,8 @@
                         "BarcodeScanner": true
                     },
                     "Caption": "$(L,damage_group)",
+                    "IsEditable" : false,
+                    "IsVisible": false,
                     "PickerItems":
                     {
                         "DisplayValue" : "{{#Property:CodeGroup}} - {{#Property:Description}}",
@@ -713,36 +711,31 @@
                         "BarcodeScanner": true
                     },
                     "IsEditable" : false,
+                    "IsVisible": false,
                     "Caption": "$(L,damage)",
-                    "PickerItems":
+                    "PickerItems":  
                     {
-                        "DisplayValue" : "{{#Property:Code}} - {{#Property:CodeDescription}}",
-                        "ReturnValue": "{Code}",
+                        "DisplayValue" : "{{#Property:DamageCode}} - {{#Property:DamageDesc}}",
+                        "ReturnValue": "{DamageCode}",
                         "Target":
                         {
-                            "EntitySet" : "PMCatalogCodes",
+                            "EntitySet" : "ZFdaMatrices",
                             "Service" : "/SAPAssetManager/Services/AssetManager.service"
                         }
-                    },
+                    },                    
+                    "OnValueChange" : "/SAPAssetManager/Rules/Notifications/Item/CreateUpdate/ZNotificationItemCreateUpdateActivity.js",
                     "_Name": "DamageDetailsLstPkr",
                     "_Type": "Control.Type.FormCell.ListPicker"
                 }]
             },
-            {
-                "Controls":
-                [{
-                    "PlaceHolder": "$(L,cause_description)",
-                    "OnValueChange": "/SAPAssetManager/Rules/Common/Validation/FormCellNoteValidation.js",
-                    "_Name": "CauseDescription",
-                    "_Type": "Control.Type.FormCell.Note"
-                }]
-            },
+
             {
                 "Controls":
                 [{
                     "AllowMultipleSelection": false,
                     "IsPickerDismissedOnSelection": true,
                     "IsSearchCancelledAfterSelection": true,
+                    "AllowDefaultValueIfOneItem": true,
                     "Search": {
                         "Enabled": true,
                         "Delay": 500,
@@ -750,8 +743,10 @@
                         "Placeholder": "$(L,search)",
                         "BarcodeScanner": true
                     },
-                    "Caption": "$(L,group)",
-                    "Value": "{CauseCodeGroup}",
+                    "Caption": "$(L,activity_group)",
+                    "IsEditable" : false,
+                    "IsVisible": false,
+                    "Value": "{ActivityCodeGroup}",
                     "PickerItems":
                     {
                         "DisplayValue" : "{{#Property:CodeGroup}} - {{#Property:Description}}",
@@ -759,11 +754,11 @@
                         "Target":
                         {
                             "EntitySet" : "PMCatalogProfiles",
-                            "Service" : "/SAPAssetManager/Services/AssetManager.service"
+                            "Service" : "/SAPAssetManager/Services/AssetManager.service",
+                            "QueryOptions" : "/SAPAssetManager/Rules/Notifications/Activity/NotificationActivityGroupQuery.js"
                         }
                     },
-                    "OnValueChange" : "/SAPAssetManager/Rules/Notifications/Item/Cause/CreateUpdate/NotificationItemCauseCreateUpdateCode.js",
-                    "_Name": "CauseGroupLstPkr",
+                    "_Name": "GroupLstPkr",
                     "_Type": "Control.Type.FormCell.ListPicker"
                 },
                 {
@@ -772,6 +767,7 @@
                     "IsPickerDismissedOnSelection": true,
                     "IsSearchCancelledAfterSelection": true,
                     "IsEditable" : false,
+                    "IsVisible": false,
                     "Search": {
                         "Enabled": true,
                         "Delay": 500,
@@ -779,14 +775,14 @@
                         "Placeholder": "$(L,search)",
                         "BarcodeScanner": true
                     },
-                    "Caption": "$(L,code)",
+                    "Caption": "$(L,activity)",
                     "PickerItems":
                     {
-                        "DisplayValue" : "{{#Property:Code}} - {{#Property:CodeDescription}}",
-                        "ReturnValue": "{Code}",
+                        "DisplayValue" : "{{#Property:TaskCode}} - {{#Property:ActivityDesc}}",
+                        "ReturnValue": "{TaskCode}",
                         "Target":
                         {
-                            "EntitySet" : "PMCatalogCodes",
+                            "EntitySet" : "ZFdaMatrices",
                             "Service" : "/SAPAssetManager/Services/AssetManager.service"
                         }
                     },
@@ -794,6 +790,7 @@
                     "_Type": "Control.Type.FormCell.ListPicker"
                 }]
             },
+
             {
                 "Controls":
                 [{
@@ -805,7 +802,12 @@
                     "_Type": "Control.Type.FormCell.Note",
                     "IsVisible": "/SAPAssetManager/Rules/Common/IsOnCreate.js",
                     "IsEditable": true
-                },
+                }]
+            },
+
+            {
+                "Controls":
+                [
                 {
                     "Title": "$(L,use_template)",
                     "ButtonType": "$(PLT, '', 'Normal')",
@@ -840,6 +842,7 @@
                     "IsVisible": "/SAPAssetManager/Rules/Documents/DocumentsIsVisible.js"
                 }]
             },
+
             {
                 "Controls":
                 [{

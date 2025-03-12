@@ -46,10 +46,12 @@
 					"ObjectCell": {
 						"PreserveIconStackSpacing": true,
 						"Icons": "/SAPAssetManager/Rules/Equipment/EquipmentListViewIconImages.js",
-						"Title": "{{#Property:EquipDesc}} - {{#Property:MaintPlant}}",
+						"Title": "/SAPAssetManager/Rules/Equipment/EquipmentListViewFormat.js",
 						"Subhead": "/SAPAssetManager/Rules/Equipment/EquipmentListViewFormat.js",
-						"Footnote": "{EquipId}",
+						"Footnote": "/SAPAssetManager/Rules/Equipment/EquipmentListViewFormat.js",
+						"Description": "/SAPAssetManager/Rules/Equipment/EquipmentListViewFormat.js",
 						"AccessoryType": "disclosureIndicator",
+						"StatusText": "/SAPAssetManager/Rules/Equipment/EquipmentListViewFormat.js",
 						"SubstatusText": "/SAPAssetManager/Rules/Equipment/EquipmentListViewFormat.js",
 						"OnPress": "/SAPAssetManager/Rules/Equipment/EquipmentDetailsNav.js",
 						"ContextMenu": {

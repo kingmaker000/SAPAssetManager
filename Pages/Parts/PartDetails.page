@@ -19,7 +19,7 @@
                 "Position": "right",
 			    "Text": "$(L,return_text)",
                 "OnPress": "/SAPAssetManager/Rules/Parts/Return/CreateUpdate/PartReturnCreate.js",
-                "Visible": "/SAPAssetManager/Rules/Parts/Return/CreateUpdate/PartReturnEnable.js"
+                "Visible": false
             }
         ]
     },
@@ -67,10 +67,6 @@
                         {
                             "KeyName": "$(L,storage_location)",
                             "Value": "/SAPAssetManager/Rules/Parts/PartLocation.js"
-                        },
-                        {
-                            "KeyName": "$(L,batch)",
-                            "Value": "/SAPAssetManager/Rules/Parts/PartBatch.js"
                         },
                         {
                             "KeyName": "$(L,bin_number)",

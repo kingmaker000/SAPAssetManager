@@ -402,7 +402,7 @@
             {
                 "EntitySet" : "{{#Property:@odata.id}}/Items",
                 "Service" : "/SAPAssetManager/Services/AssetManager.service",
-                "QueryOptions": "$top=2&$expand=Notification,Notification/NotifMobileStatus_Nav,Notification/NotifMobileStatus_Nav/OverallStatusCfg_Nav&$orderby=ItemSortNumber asc"
+                "QueryOptions": "$top=2&$expand=ItemActivities,Notification,Notification/NotifMobileStatus_Nav,Notification/NotifMobileStatus_Nav/OverallStatusCfg_Nav&$orderby=ItemSortNumber asc"
             },
             "ObjectCell":
             {

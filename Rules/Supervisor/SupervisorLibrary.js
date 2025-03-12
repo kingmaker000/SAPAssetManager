@@ -423,7 +423,10 @@ export default class {
 
         if (useDataQuery) {
             let queryBuilder = context.dataQueryBuilder();
-            queryBuilder.expand('WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav');
+            //Begin PG&E REPLACE: Add WOHeader/Equipment, WOHeader/Equipment/Address, and ZOilSamples to expands
+            //queryBuilder.expand('WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav');
+            queryBuilder.expand('WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOHeader/Equipment,WOHeader/Equipment/Address,ZOilSamples');
+            //End PG&E REPLACE: Add WOHeader/Equipment, WOHeader/Equipment/Address, and ZOilSamples to expands
             queryBuilder.orderBy('OrderId,OperationNo,OperationMobileStatus_Nav/MobileStatus');
             queryBuilder.filter("(OperationMobileStatus_Nav/MobileStatus eq '" + review + "' or OperationMobileStatus_Nav/MobileStatus eq '" + rejected + "')");
             return queryBuilder;
@@ -483,7 +486,10 @@ export default class {
 
         if (useDataQuery) {
             let queryBuilder = context.dataQueryBuilder();
-            queryBuilder.expand('WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav');
+            //Begin PG&E REPLACE: Add WOHeader/Equipment, WOHeader/Equipment/Address, and ZOilSamples to expands
+            //queryBuilder.expand('WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav');
+            queryBuilder.expand('WOObjectList_Nav,Tools,OperationMobileStatus_Nav,OperationLongText,WOHeader,UserTimeEntry_Nav,WOHeader/WOPriority,Employee_Nav,WOHeader/Equipment,WOHeader/Equipment/Address,ZOilSamples');
+            //End PG&E REPLACE: Add WOHeader/Equipment, WOHeader/Equipment/Address, and ZOilSamples to expands
             queryBuilder.orderBy('OrderId,OperationNo,OperationMobileStatus_Nav/MobileStatus');
             queryBuilder.filter("(OperationMobileStatus_Nav/MobileStatus eq '" + review + "' or OperationMobileStatus_Nav/MobileStatus eq '" + rejected + "')");
             return queryBuilder;

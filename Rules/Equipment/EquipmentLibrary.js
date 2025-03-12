@@ -26,7 +26,12 @@ export class EquipmentLibrary {
         return '$select=ObjectStatus_Nav/SystemStatus_Nav/StatusText,WorkOrderHeader/OrderId,' +
                'EquipDesc,EquipId,PlanningPlant,WorkCenter,EquipType,EquipCategory,FuncLocId','Room','PlantSection','InventoryNum','ManufSerialNo','ManufPartNo','ModelNum','Manufacturer','SuperiorEquip'+
                '&$orderby=EquipId' +
+        //Begin PG&E Replace: Expand Address
+        /*
                '&$expand=ObjectStatus_Nav/SystemStatus_Nav,EquipDocuments,WorkOrderHeader,FunctionalLocation,WorkCenter_Main_Nav';
+        */
+               '&$expand=ObjectStatus_Nav/SystemStatus_Nav,EquipDocuments,WorkOrderHeader,FunctionalLocation,WorkCenter_Main_Nav,Address';
+       //End PG&E Replace: Expand Address
     }
 
      /**

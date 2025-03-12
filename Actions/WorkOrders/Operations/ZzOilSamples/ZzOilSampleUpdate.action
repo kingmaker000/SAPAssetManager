@@ -1,0 +1,27 @@
+{
+  "_Type": "Action.Type.ODataService.UpdateEntity",
+  "Target": {
+    "EntitySet": "ZMyWorkOrderSamples",
+    "Service": "/SAPAssetManager/Services/AssetManager.service",
+    "ReadLink": "{@odata.readLink}"
+  },
+  "Properties": {
+    "Plant": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSamplePlant.js",
+    "StorageLocation": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleStorageLocation.js",
+    "Batch": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleBatch.js",
+    "BatchWithdrawn": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleBatchWithdrawn.js",
+    "SampleDate": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleSampleDate.js",
+    "Reservation": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleReservation.js",
+    "ReservationItem": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleReservationItem.js",
+    "MaterialDocumentNum": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleMaterialDocumentNum.js",
+    "MaterialDocumentYear": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleMaterialDocumentYear.js",
+    "MaterialDocumentItem": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleMaterialDocumentItem.js"
+  },
+  "RequestOptions":
+  {
+    "UpdateMode": "/SAPAssetManager/Rules/Common/ODataUpdateMode.js"
+  },
+  "Headers": {
+    "OfflineOData.TransactionID":"/SAPAssetManager/Rules/WorkOrders/WorkOrderId.js"
+  }
+}

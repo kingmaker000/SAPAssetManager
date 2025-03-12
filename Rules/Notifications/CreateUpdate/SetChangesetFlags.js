@@ -11,8 +11,43 @@ function notificationCreateOrItemAdd(context, notificationResults) {
         let actionBinding = context.binding;
         actionBinding.LocalNotificationID = notificationResults.getItem(0).NotificationNumber;
         context.setActionBinding(actionBinding);
-        return context.executeAction('/SAPAssetManager/Actions/Notifications/Item/QMNotificationItemCreate.action').then(() => {
+        return context.executeAction('/SAPAssetManager/Actions/Notifications/Item/QMNotificationItemCreate.action').then(actionResult => {
+
+            let data = JSON.parse(actionResult.data);
+            return context.executeAction({
+                'Name': '/SAPAssetManager/Actions/Notifications/Item/NotificationItemActivityCreate.action',
+                'Properties': {
+                    'Properties':
+                    {
+                        'NotificationNumber': data.NotificationNumber,
+                        'ItemNumber' : data.ItemNumber,
+                        "ActivitySequenceNumber" : "/SAPAssetManager/Rules/Notifications/Item/Activity/GenerateNotificationItemActivityID.js",
+                        "ActivityText" : data.ItemText,
+                        "ActivityCodeGroup": "/SAPAssetManager/Rules/Notifications/GroupLstPkrValue.js",
+                        "ActivityCode" : "/SAPAssetManager/Rules/Notifications/CodeLstPkrValue.js",
+                        "ActivitySortNumber" : data.ItemSortNumber
+                    },
+                    'Headers':
+                    {
+                        'OfflineOData.RemoveAfterUpload': 'true',
+                        'OfflineOData.TransactionID': data.NotificationNumber,
+                    },
+                    'CreateLinks':
+                    [{
+                        'Property' : 'Item',
+                        'Target':
+                        {
+                            'EntitySet' : 'MyNotificationItems',
+                            'ReadLink' : data['@odata.readLink'],
+                        },
+                    }],
+                    'OnSuccess' : '',
+                },
+            }).then(() => {           
             return context.executeAction('/SAPAssetManager/Actions/Notifications/CreateUpdate/QMNotificationSuccess.action');
+            });
+        }).catch((error) => {
+            Logger.error('QM', `SetChangesetFlags(context): ${error}`);
         });
     } else { //Create new notification with new item
         //Set LocalNotificationID to the generated local notification ID. This is needed for NotificationQMCreateChangeSet.action.
@@ -21,12 +56,23 @@ function notificationCreateOrItemAdd(context, notificationResults) {
             actionBinding.LocalNotificationID = newNotificationID;
             context.setActionBinding(actionBinding);
             common.setOnChangesetFlag(context, true);
-            return context.executeAction('/SAPAssetManager/Actions/Notifications/CreateUpdate/NotificationQMCreateChangeSet.action');
+            return context.executeAction('/SAPAssetManager/Actions/Notifications/CreateUpdate/NotificationQMCreateChangeSet.action').then(() => {  
+                return context.executeAction('/SAPAssetManager/Actions/Notifications/Item/ZQMNotificationItemActivityCreate.action').catch((error) => {
+                    Logger.error('Error in creating Notif Item Activity', error);
+                });
+            });
         });
     }
 }
 
 export default function SetChangesetFlags(context) {
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Begin PG&E Enhancement (D0RB)
+    // Always create a new notification (never add an item to an existing notification)
+    notificationCreateOrItemAdd(context);
+    
+    /*
     let planningPlant = context.binding.InspectionLot_Nav.WOHeader_Nav.PlanningPlant;
     let orderType = context.binding.InspectionLot_Nav.WOHeader_Nav.OrderType;
 
@@ -51,5 +97,9 @@ export default function SetChangesetFlags(context) {
             Logger.error('QM', `SetChangesetFlags(context): ${error}`);
         });
     }
-    Logger.error('QM', 'Planning plant and order type cannot be undefined or empty.');
+    Logger.error('QM', 'Planning plant and order type cannot be undefined or empty.');   
+    */
+
+    // End PG&E Enhancement (D0RB)
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////       
 }

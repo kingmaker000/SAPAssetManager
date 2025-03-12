@@ -431,6 +431,18 @@ export default class {
         libThis.getPartDescription(pageClientAPI, binding.Material).then(result => {
             dict.MaterialSim.setValue(libForm.getFormattedKeyDescriptionPair(pageClientAPI, binding.Material, result));
         });
+
+        //////////////////////////////////////////////////////////////////
+        // Begin PG&E INSERT:  For samples taken, hide Qty and UOM fields
+        let controlQty = libCom.getControlProxy(pageClientAPI, 'QuantitySim');
+        let controlUOM = libCom.getControlProxy(pageClientAPI, 'UOMSim');
+        if (libThis.ZzPartMovementReasonIsSampleTaken(pageClientAPI)) {
+            //Hide Quantity and UOM fields
+            controlQty.setVisible(false);
+            controlUOM.setVisible(false);
+        }
+        // End PG&E INSERT:  For samples taken, hide Qty and UOM fields
+        //////////////////////////////////////////////////////////////////
     }
 
     static SerialPartsIssueUpdateEntitySet(pageClientAPI) {
@@ -508,6 +520,7 @@ export default class {
     /**
      * Sets the initial valuefor quantity to issue when the screen is loaded
      * Calcuation is: required - withdrawn (backend) - withdrawn (local issues)
+     * PG&E: For samples taken, always default quantity 1
      * @param {*} context
      */
     static partIssueCreateUpdateCalculateQuantity(context) {
@@ -517,17 +530,27 @@ export default class {
         let withdrawn = Number(binding.WithdrawnQuantity);
         let control = libCom.getControlProxy(context, 'QuantitySim');
 
-        return libThis.getLocalQuantityIssued(context, binding).then(result => {
-            withdrawn += result;
-            if (withdrawn > required) {
-                withdrawn = required;
-            }
-            control.setValue((required - withdrawn).toString());
-        }).catch(err => {
-            /**Implementing our Logger class*/
-            Logger.error(context.getGlobalDefinition('/SAPAssetManager/Globals/Logs/CategoryParts.global').getValue(), err);
-            control.setValue('');
-        });
+        // Begin PG&E:  For samples taken, always default quantity 1
+        let controlUOM = libCom.getControlProxy(context, 'UOMSim');
+        if (libThis.ZzPartMovementReasonIsSampleTaken(context)) {
+            control.setValue('1');
+            //Hide Quantity and UOM fields
+            control.setVisible(false);
+            controlUOM.setVisible(false);
+        } else {
+        // End PG&E:  For samples taken, always default quantity 1
+            return libThis.getLocalQuantityIssued(context, binding).then(result => {
+                withdrawn += result;
+                if (withdrawn > required) {
+                    withdrawn = required;
+                }
+                control.setValue((required - withdrawn).toString());
+            }).catch(err => {
+                /**Implementing our Logger class*/
+                Logger.error(context.getGlobalDefinition('/SAPAssetManager/Globals/Logs/CategoryParts.global').getValue(), err);
+                control.setValue('');
+            });
+        } // PG&E:  For samples taken, always default quantity 1
     }
 
     /**
@@ -544,6 +567,9 @@ export default class {
         promises.push(libThis.validateQuantityIsNumeric(pageClientAPI, dict));
         promises.push(libThis.validateStorageLocationNotBlank(pageClientAPI, dict));
         promises.push(libThis.validateBatchNotBlank(pageClientAPI, dict));
+        //Begin PG&E: Validate equipment is not blank
+        promises.push(libThis.ZzValidateEquipmentNotBlank(pageClientAPI,dict));
+        //End PG&E: Validate equipment is not blank
         let autoSerial = pageClientAPI.evaluateTargetPath('#Control:AutoGenerateSerialNumberSwitch/#Value');
         if (!libVal.evalIsEmpty(pageClientAPI.binding.SerialNoProfile) && !autoSerial) {
             promises.push(libThis.validateSerialNumberNotBlank(pageClientAPI,dict));
@@ -836,6 +862,18 @@ export default class {
         }
     }
 
+    static ZzValidateEquipmentNotBlank(pageClientAPI, dict) {
+        if (libCom.isDefined(dict.ZzEquipmentLstPkr) && dict.ZzEquipmentLstPkr.visible) {
+            if (libVal.evalIsEmpty(libCom.getListPickerValue(dict.ZzEquipmentLstPkr.getValue()))) {
+                let message = pageClientAPI.localizeText('field_is_required');
+                libCom.setInlineControlError(pageClientAPI, dict.ZzEquipmentLstPkr, message);
+                return Promise.reject();
+            }
+        }
+
+        return Promise.resolve(true);
+    }
+
     /**
     * Evaluates whether the current UOM length is within length limit
     */
@@ -961,6 +999,30 @@ export default class {
         return true;
    }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Begin PG&E INSERT
+    /**
+    * Determine if movement reason is due to a sample taken
+    */
+   static ZzPartMovementReasonIsSampleTaken(pageClientAPI) {
+
+        let sampleTaken = '0099';
+        let binding = pageClientAPI.getPageProxy().binding;
+        var reason = binding.ZzReason;
+
+        if (binding['@odata.type'] === '#sap_mobile.MaterialDocument') {
+            // When updating material document from sync error fix
+            reason = binding.RelatedItem[0].MovementReason;
+        }
+
+        if (reason === sampleTaken) {
+            return true;
+        } 
+        return false;
+    }
+    // End PG&E INSERT
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
     * Sets header values for create/update service before writing OData record
     */
@@ -1010,6 +1072,14 @@ export default class {
                 return libCom.getListPickerValue(libCom.getFieldValue(pageClientAPI, 'ValuationTypePicker', '', null, true));
             case 'Quantity':
                 return libCom.getFieldValue(pageClientAPI, 'QuantitySim', '', null, true);
+            // Begin PG&E: Add Movement Reason and Mfg Date to Part Issue
+            case 'MovementReason':
+                return pageClientAPI.getPageProxy().binding.ZzReason;
+            case 'ZzDateOfManufacture':
+                return new ODataDate().toDBDateTimeString(pageClientAPI);
+            case 'ZzEquipment':
+                return libCom.getListPickerValue(libCom.getTargetPathValue(pageClientAPI, '#Control:ZzEquipmentLstPkr/#Value')) || '';
+            // End PG&E: Add Movement Reason and Mfg Date to Part Issue
             default:
                 return '';
         }

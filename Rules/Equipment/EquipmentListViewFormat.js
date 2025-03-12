@@ -14,6 +14,8 @@ export default function EquipmentListViewFormat(context) {
         case 'ObjectListEquipmentViewSection':
         case 'EquipmentListViewSection':
             switch (property) {
+                //Begin PG&E Replace
+                /*
                 case 'Subhead':
                     value = context.read('/SAPAssetManager/Services/AssetManager.service', `Plants('${context.binding.PlanningPlant}')`, [], '').then(function(result) {
                         let plant = '-';
@@ -30,6 +32,55 @@ export default function EquipmentListViewFormat(context) {
                         //Display equipment status text.
                     value = EquipmentLib.getStatusDescription(context, false);
                     break;
+                */
+                case 'Title':
+                    //Display equipment description
+                    value = context.binding.EquipDesc;
+                    break;
+                case 'Subhead':
+                    //Display equipment operating number and barcode
+                    if (context.binding.ZzOperatingNum) {
+                        value = context.binding.ZzOperatingNum;
+                    } else {
+                        value = '<' + context.localizeText('operating_num') + '>';
+                    }
+                    value = value + ' (';
+                    if (context.binding.InventoryNum) {
+                        value = value + context.binding.InventoryNum;
+                    } else {
+                        value = value + '<' + context.localizeText('barcode') + '>';
+                    }
+                    value = value + ')';
+                    break;
+                case 'Footnote':
+                    //Display equipment ID
+                    value = context.binding.EquipId;
+                    break;
+                case 'Description':
+                    //Display address street
+                    if (context.binding.Address.Street) {
+                        value = context.binding.Address.Street;
+                    } else {
+                        value = '<' + context.localizeText('street_loc') + '>';
+                    }
+                    break;
+                case 'StatusText':
+                    //Display vault
+                    if (context.binding.ZzVault) {
+                        value = context.localizeText('vault') + ' ' + context.binding.ZzVault;
+                    } else {
+                        value = '<' + context.localizeText('vault') + '>';
+                    }
+                    break;
+                case 'SubstatusText':
+                    //Display feeder (circuit)
+                    if (context.binding.ZzFeeder) {
+                        value = context.binding.ZzFeeder;
+                    } else {
+                        value = '<' + context.localizeText('feeder') + '>';
+                    }
+                    break;
+                //End PG&E Replace
                 default:
                     break;
             }

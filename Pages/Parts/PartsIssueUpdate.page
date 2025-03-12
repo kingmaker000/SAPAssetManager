@@ -1,5 +1,5 @@
 {
-    "Caption": "$(L,issue_part)",
+    "Caption": "/SAPAssetManager/Rules/Parts/Issue/ZzPartIssueCaption.js",
     "OnLoaded": "/SAPAssetManager/Rules/Parts/Issue/CreateUpdate/PartIssueUpdateOnPageLoad.js",
     "ActionBar": {
         "Items": [
@@ -151,7 +151,33 @@
                                     "QueryOptions": "/SAPAssetManager/Rules/Parts/CreateUpdate/PartBatchNumberQueryOptions.js"
                                 }
                             },
-                            "IsVisible": "/SAPAssetManager/Rules/Inventory/IssueOrReceipt/Valuations/ValuationVisible.js"	
+                            "IsVisible": "/SAPAssetManager/Rules/Parts/Issue/CreateUpdate/ZzPartIssueUpdateBatchPickerVisible.js"	
+                        },
+                        {
+                            "_Type": "Control.Type.FormCell.ListPicker",
+                            "_Name": "ZzEquipmentLstPkr", 
+                            "Caption": "$(L,equipment)",
+                            "Value" : "/SAPAssetManager/Rules/Parts/Issue/CreateUpdate/ZzPartIssueUpdateZzEquipment.js",
+                            "AllowDefaultValueIfOneItem": false,
+                            "AllowMultipleSelection": false,
+                            "IsPickerDismissedOnSelection": true,
+                            "Search": {
+                                "Enabled": true,
+                                "Delay": 500,
+                                "MinimumCharacterThreshold": 3,
+                                "Placeholder": "$(L,search)",
+                                "BarcodeScanner": true
+                            },
+                            "PickerItems": {
+                                "DisplayValue": "{{#Property:ZzOperatingNum}}; {{#Property:EquipDesc}} ({{#Property:EquipId}};{{#Property:InventoryNum}})",
+                                "ReturnValue": "{EquipId}",
+                                "Target": {
+                                    "EntitySet": "MyEquipments",
+                                    "Service": "/SAPAssetManager/Services/AssetManager.service",
+                                    "QueryOptions": "$orderby=EquipId"
+                                }
+                            },
+                            "IsVisible": "/SAPAssetManager/Rules/Parts/Issue/CreateUpdate/ZzPartIssueUpdateZzEquipmentLstPkrVisible.js"
                         }
                     ]
                 },

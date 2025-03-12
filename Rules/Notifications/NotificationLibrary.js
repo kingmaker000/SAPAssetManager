@@ -155,6 +155,122 @@ export default class {
             return Promise.resolve();
         }
     }
+
+    static NotificationItemCreateUpdateActivity(context) {
+        var selection = context.getValue();
+        var page = context.getPageProxy().getControl('FormCellContainer');
+        if (!page.isContainer()) {
+            return null;
+        }
+        var targetList = page.getControl('CodeLstPkr');
+        var targetListGrp = context.getPageProxy().evaluateTargetPathForAPI('#Control:GroupLstPkr');
+        var specifier = targetList.getTargetSpecifier();
+
+        if (selection.length > 0) {
+            // Grab current notification (if it exists)
+            let notif = context.getPageProxy().binding || {};
+
+            if (notif['@odata.type'] === '#sap_mobile.MyNotificationItem') {
+                notif = notif.Notification;
+            } else if (notif['@odata.type'] !== '#sap_mobile.MyNotificationHeader' ) {
+                notif = {
+                    // eslint-disable-next-line brace-style
+                    'NotificationType' : (function() {try { return context.getPageProxy().evaluateTargetPath('#Control:TypeLstPkr/#SelectedValue'); } catch (e) { return ''; }})(),
+                    // eslint-disable-next-line brace-style
+                    'HeaderEquipment': (function() {try { return context.getPageProxy().evaluateTargetPath('#Control:EquipHierarchyExtensionControl/#SelectedValue'); } catch (e) { return ''; }})(),
+                    // eslint-disable-next-line brace-style
+                    'HeaderFunctionLocation' : (function() {try { return context.getPageProxy().evaluateTargetPath('#Control:FuncLocHierarchyExtensionControl/#SelectedValue'); } catch (e) { return ''; }})(),
+                };
+            }
+
+            return this.CatalogCodeQuery(context, notif, 'CatTypeObjectParts').then(function(result) {
+                selection = selection[0].ReturnValue;
+
+                specifier.setDisplayValue('{{#Property:TaskCode}} - {{#Property:ActivityDesc}}');
+                specifier.setReturnValue('{TaskCode}');
+
+                specifier.setEntitySet('ZFdaMatrices');
+                specifier.setService('/SAPAssetManager/Services/AssetManager.service');
+                let part = context.getPageProxy().evaluateTargetPath('#Control:PartDetailsLstPkr/#SelectedValue');
+                let damage = context.getPageProxy().evaluateTargetPath('#Control:DamageDetailsLstPkr/#SelectedValue');
+                let newQuery = "$filter=ObjectPartCode eq '" + part + "' and DamageCode eq '" + damage + "'&$orderby=TaskCode";
+                specifier.setQueryOptions(newQuery);
+
+                var codes = [];
+                return context.read('/SAPAssetManager/Services/AssetManager.service', 'ZFdaMatrices', [], newQuery).then(function (results) {
+                    if (results && results.length > 0) {
+                        results.forEach(function (element) {
+                            codes.push(
+                                {
+                                    'ReturnValue': element.TaskCode,
+                                    'DisplayValue': element.TaskCode + ' - ' + element.ActivityDesc
+                                });
+                        });
+                        var sortedCodes = codes.sort((a, b) => a.ReturnValue.localeCompare(b.ReturnValue, undefined, { caseFirst: "upper" }));
+                        const uniqueCodes = [...new Map(sortedCodes.map((n) => [n.ReturnValue, n])).values()];
+                        // targetList.setPickerItems(uniqueCodes);
+
+                        // set the activity group and activity code fields editable
+                        libCom.setEditable(targetList, true);
+                        libCom.setEditable(targetListGrp, true);
+
+                        // set the activity group and activity code fields visible                         
+                        if(page.getControl('DamageGroupLstPkr').getValue().length > 0 && 
+                            page.getControl('GroupLstPkr').getValue().length > 0 ) {
+                            // page.getControl('DamageDetailsLstPkr').setVisible(true);
+                            page.getControl('GroupLstPkr').setVisible(true);
+                            page.getControl('CodeLstPkr').setVisible(true);
+                        } else {
+                            page.getControl('GroupLstPkr').setVisible(false);
+                            page.getControl('CodeLstPkr').setVisible(false);                            
+                        }
+
+                        page.getControl('CodeLstPkr').setValue('');
+                        page.getControl('CodeLstPkr').clearValidation();
+                        if (uniqueCodes.length === 1) {
+                            let defaultCode = uniqueCodes[0].ReturnValue;
+                          //  targetList.setValue(defaultCode);
+                            specifier.setReturnValue(defaultCode);
+                            specifier.setDisplayValue(uniqueCodes[0].DisplayValue);
+                        } else {
+                            targetList.setValue('');
+                        }
+
+                        return targetList.setTargetSpecifier(specifier).then(() => {
+                          //  targetList.setPickerItems(uniqueCodes);
+                        });
+      
+                    } 
+
+                }).catch((error) => {
+                    Logger.info('Error reading ZFdaMatrices' + error);
+                    return false;
+                });   
+                // // set the activity group and activity code fields editable
+                // libCom.setEditable(targetList, true);
+                // libCom.setEditable(targetListGrp, true);
+                   
+                // // set the activity group and activity code fields visible 
+                // page.getControl('GroupLstPkr').setVisible(true);
+                // page.getControl('CodeLstPkr').setVisible(true);
+
+                // page.getControl('CodeLstPkr').setValue('');
+                // if (uniqueCodes.length === 1) {
+                //     let defaultCode = uniqueCodes[0].ReturnValue;
+                //     page.getControl('CodeLstPkr').setValue(defaultCode);
+                // } 
+
+                // return targetList.setTargetSpecifier(specifier).then(() => {
+                //     targetList.setValue('');
+                // });
+            });
+        } else {
+            targetList.setValue('');
+            libCom.setEditable(targetList, false);
+            return Promise.resolve();
+        }
+    }
+    
     /**
 	 * Used for updating the Notification Item Damage picker, based on selection from Damage Group Picker
 	 * USAGE: List On Change Rule
@@ -167,7 +283,13 @@ export default class {
             return null;
         }
         var targetList = page.getControl('DamageDetailsLstPkr');
+        var targetListGrp = context.getPageProxy().evaluateTargetPathForAPI('#Control:DamageGroupLstPkr'); 
         var specifier = targetList.getTargetSpecifier();
+
+        var codegrp = context.getPageProxy().evaluateTargetPath('#Control:DamageGroupLstPkr/#SelectedValue');
+        if (codegrp) {
+            libCom.setEditable(targetList, true);        
+        }
 
         if (selection.length > 0) {
             // Grab current notification (if it exists)
@@ -188,18 +310,67 @@ export default class {
 
             return this.CatalogCodeQuery(context, notif, 'CatTypeDefects').then(function(result) {
                 selection = selection[0].ReturnValue;
+                var qry = "$filter=ObjectPartCode eq '" + selection + "'&$orderby=DamageCode";   
 
-                specifier.setDisplayValue('{{#Property:Code}} - {{#Property:CodeDescription}}');
-                specifier.setReturnValue('{Code}');
+                var damCodes = [];
+                return context.read('/SAPAssetManager/Services/AssetManager.service', 'ZFdaMatrices', [], qry).then(function (results) {
+                    if (results && results.length > 0) {
+                        results.forEach(function (element) {
+                            damCodes.push(
+                                {
+                                    'PartCode': element.ObjectPartCode,
+                                    'DamageCode': element.DamageCode,
+                                    'ActCode': element.TaskCode,
+                                });    
+                        });
 
-                specifier.setEntitySet('PMCatalogCodes');
-                specifier.setService('/SAPAssetManager/Services/AssetManager.service');
+                        var uniqueCodes = damCodes.reduce((unique, o) => {
+                            if(!unique.some(obj => obj.PartCode === o.PartCode && obj.DamageCode === o.DamageCode)) {
+                              unique.push(o);
+                            }
+                            return unique;
+                        },[]);
 
-                specifier.setQueryOptions("$filter=Catalog eq '" + result.Catalog + "' and CodeGroup eq '" + selection + "'&$orderby=Code");
-                libCom.setEditable(targetList, true);
+                        var uniqueCodeKeys = [];
+                        for (let i = 0; i < uniqueCodes.length; i++) {
+                            uniqueCodeKeys.push(`(DamageCode eq '${uniqueCodes[i].DamageCode}' and ObjectPartCode eq '${uniqueCodes[i].PartCode}' and TaskCode eq '${uniqueCodes[i].ActCode}')`);
+                        }
+                        let customFilter = uniqueCodeKeys.join(' or ');
+                        var qry = "$filter=" + customFilter + "&$orderby=DamageCode";
+                        // var qry = "$filter=ObjectPartCode eq '" + selection + "'&$orderby=DamageCode";
+                        specifier.setQueryOptions(qry);
 
-                return targetList.setTargetSpecifier(specifier).then(() => {
-                    targetList.setValue('');
+                         // set the damage group and damage code fields editable
+                        libCom.setEditable(targetList, true);
+                        libCom.setEditable(targetListGrp, true);
+                        
+                        // set the damage group and damage code fields visible 
+                        page.getControl('DamageGroupLstPkr').setVisible(true);
+                        page.getControl('DamageDetailsLstPkr').setVisible(true);
+                        page.getControl('DamageDetailsLstPkr').clearValidation();
+                        if (uniqueCodes.length === 1) {
+                            // set the activity group and activity code fields visible 
+                            page.getControl('GroupLstPkr').setVisible(true);
+                            page.getControl('CodeLstPkr').setVisible(true);
+
+                            // set the activity group and activity code fields visible 
+                            page.getControl('GroupLstPkr').setEditable(true);
+                            if(page.getControl('GroupLstPkr').getValue().length === 1) {
+                                page.getControl('CodeLstPkr').setEditable(true);    
+                            }
+                        } else {                           
+                            page.getControl('DamageDetailsLstPkr').setValue(''); 
+                            page.getControl('CodeLstPkr').setValue('');                          
+                        }
+
+                        return targetList.setTargetSpecifier(specifier).then(() => {
+                            // targetList.setPickerItems(uniqueCodes);
+                        });
+                    } 
+
+                }).catch((error) => {
+                    Logger.info('Error reading ZFdaMatrices' + error);
+                    return false;
                 });
             });
         } else {
@@ -503,6 +674,77 @@ export default class {
             return '';
         }
     }
+
+    // Method return the qurey for displaying valid set of damag codes based on the part code selected
+    static NotificationDamageCodeQuery(context) {
+        var selection = context.binding.ObjectPart;
+        var qry = "$filter=ObjectPartCode eq '" + selection + "'&$orderby=DamageCode";  
+        var damCodes = [];
+
+        return context.read('/SAPAssetManager/Services/AssetManager.service', 'ZFdaMatrices', [], qry).then(function (results) {
+            if (results && results.length > 0) {
+                results.forEach(function (element) {
+                    damCodes.push(
+                        {
+                            'PartCode': element.ObjectPartCode,
+                            'DamageCode': element.DamageCode,
+                            'ActCode': element.TaskCode,
+                        });    
+                });
+
+                var uniqueCodes = damCodes.reduce((unique, o) => {
+                    if(!unique.some(obj => obj.PartCode === o.PartCode && obj.DamageCode === o.DamageCode)) {
+                      unique.push(o);
+                    }
+                    return unique;
+                },[]);
+
+                var uniqueCodeKeys = [];
+                for (let i = 0; i < uniqueCodes.length; i++) {
+                    uniqueCodeKeys.push(`(DamageCode eq '${uniqueCodes[i].DamageCode}' and ObjectPartCode eq '${uniqueCodes[i].PartCode}' and TaskCode eq '${uniqueCodes[i].ActCode}')`);
+                }
+                let customFilter = uniqueCodeKeys.join(' or ');
+                return qry = "$filter=" + customFilter + "&$orderby=DamageCode";
+
+            } 
+        });
+    }
+
+// Method return the qurey for displaying valid set of task codes based on the part and damage codes selected
+    static NotificationActivityCodeQuery(context) {
+        var damCodes = [];
+        let part = context.binding.ObjectPart;
+        let damage = context.binding.DamageCode;
+        let qry = "$filter=ObjectPartCode eq '" + part + "' and DamageCode eq '" + damage + "'&$orderby=TaskCode";
+        return context.read('/SAPAssetManager/Services/AssetManager.service', 'ZFdaMatrices', [], qry).then(function (results) {
+            if (results && results.length > 0) {
+                results.forEach(function (element) {
+                    damCodes.push(
+                        {
+                            'PartCode': element.ObjectPartCode,
+                            'DamageCode': element.DamageCode,
+                            'ActCode': element.TaskCode,
+                        });    
+                });
+
+                var uniqueCodes = damCodes.reduce((unique, o) => {
+                    if(!unique.some(obj => obj.PartCode === o.PartCode && obj.DamageCode === o.DamageCode)) {
+                      unique.push(o);
+                    }
+                    return unique;
+                },[]);
+
+                var uniqueCodeKeys = [];
+                for (let i = 0; i < uniqueCodes.length; i++) {
+                    uniqueCodeKeys.push(`(DamageCode eq '${uniqueCodes[i].DamageCode}' and ObjectPartCode eq '${uniqueCodes[i].PartCode}' and TaskCode eq '${uniqueCodes[i].ActCode}')`);
+                }
+                let customFilter = uniqueCodeKeys.join(' or ');
+                return qry = "$filter=" + customFilter + "&$orderby=DamageCode";
+
+            } 
+        });
+    }
+
 
     /**
 	 * Used for setting the List Target QueryOptions for Notification Item Task/Activity Group

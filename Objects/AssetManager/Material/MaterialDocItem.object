@@ -204,6 +204,16 @@
 			"Key": false,
 			"_Name": "Quantity",
 			"_Type": "Edm.Decimal"
+		},
+		{
+			"Key": false,
+			"_Name": "ZzDateOfManufacture",
+			"_Type": "Edm.DateTime"
+		},
+		{
+			"Key": false,
+			"_Name": "ZzEquipment",
+			"_Type": "Edm.String"
 		}
 	],
 	"Service": "/SAPAssetManager/Services/AssetManager.service",

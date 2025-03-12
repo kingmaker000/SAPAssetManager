@@ -8,5 +8,11 @@ export default function PartBatchNumberQueryOptions(context) {
         materialNum = context.binding.RelatedItem[0].Material; 
     }
 
-    return `$filter=Plant eq '${plant}' and MaterialNum eq '${materialNum}'`;
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Begin PG&E REPLACE: Sort batch list by batch number
+//  return `$filter=Plant eq '${plant}' and MaterialNum eq '${materialNum}';
+    return `$filter=Plant eq '${plant}' and MaterialNum eq '${materialNum}' &$orderby=Batch`;
+//End PG&E REPLACE: Sort batch list by batch number
+//////////////////////////////////////////////////////////////////////////////////////////////
+
 }

@@ -1,0 +1,15 @@
+{
+	"_Type": "Action.Type.ODataService.DeleteEntity",
+	"Target":
+	{
+		"EntitySet": "MaterialBatches",
+        "Service": "/SAPAssetManager/Services/AssetManager.service",
+        "ReadLink": "/SAPAssetManager/Rules/WorkOrders/Operations/ZzOilSamples/Update/ZzOilSampleBatchReadLink.js"
+	},
+	"RequestOptions": {
+		"SendEmptyUpdate": true
+	},
+  "Headers": {
+    "OfflineOData.TransactionID":"/SAPAssetManager/Rules/WorkOrders/WorkOrderId.js"
+  }
+}
